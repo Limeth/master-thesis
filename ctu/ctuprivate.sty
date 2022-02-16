@@ -1,0 +1,43 @@
+\ProvidesPackage{ctu/ctuprivate}
+\RequirePackage{color}
+\RequirePackage{ifxetex}
+
+\RequirePackage{kvoptions}
+\DeclareBoolOption[false]{spotcolors}
+\DeclareComplementaryOption{nospotcolors}{spotcolors}
+\ProcessKeyvalOptions*{}
+
+% \ifvubprivate@spotcolors
+%     \RequirePackage{colorspace}
+%     % Define our lovely new colors
+%     \definespotcolor{vuboranje}{PANTONE 021}{0,.78,1.,0}
+%     \definespotcolor{vubbleu}{PANTONE 286}{1,.8,.16,.03}
+%     \definespotcolor{ulbblue}{PANTONE 287 C}{1,.75,.02,.18}
+% \else
+% \definecolor{vuboranje}{cmyk}{0,.78,1.,0}
+% \definecolor{vubbleu}{cmyk}{1,.8,.16,.03}
+% \definecolor{ulbblue}{cmyk}{1,.75,.02,.18}
+% \fi
+\definecolor{ctublue}{cmyk}{1,0.43,0,0} % #0091FF
+
+\ifxetex
+\RequirePackage{fontspec}
+\newfontfamily\technika{Technika}
+\fi
+
+\newcommand\ctufont[1]{
+    \ifxetex
+    \technika{#1}
+    \else
+    \usefont{T1}{qag}{m}{n}#1
+    \fi
+}
+
+\newcommand\ctufontbf[1]{
+    \ifxetex
+    \textbf{\technika{#1}}
+    \else
+    \usefont{T1}{qag}{b}{n}#1
+    \fi
+}
+

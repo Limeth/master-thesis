@@ -1,0 +1,80 @@
+\ProvidesPackage{ctu}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{ifxetex}
+\RequirePackage{tikz}
+\RequirePackage{adjustbox}
+% VUB is in Belgium, we use A4
+% Additionally, we use `geometry` to play with margins on the title page
+% \RequirePackage[a4paper]{geometry}
+%\RequirePackage[T1]{fontenc}
+
+\RequirePackage{kvoptions}
+\DeclareBoolOption[false]{spotcolors}
+\DeclareComplementaryOption{nospotcolors}{spotcolors}
+\ProcessKeyvalOptions*{}
+
+% \ifvub@spotcolors
+% \RequirePackage[spotcolors]{vubprivate}
+% \else
+\RequirePackage{ctu/ctuprivate}
+% \fi
+
+\DeclareRobustCommand\doctype[1]       {\gdef\@doctype       {#1}}
+\DeclareRobustCommand\universitylogo[1]{\gdef\@universitylogo{#1}}
+\DeclareRobustCommand\pretitle[1]      {\gdef\@pretitle      {#1}}
+\DeclareRobustCommand\university[1]    {\gdef\@university    {#1}}
+\DeclareRobustCommand\facultynum[1]    {\gdef\@facultynum    {#1}}
+\DeclareRobustCommand\faculty[1]       {\gdef\@faculty       {#1}}
+\DeclareRobustCommand\department[1]    {\gdef\@department    {#1}}
+\DeclareRobustCommand\subtitle[1]      {\gdef\@subtitle      {#1}}
+\DeclareRobustCommand\promotors[1]     {\gdef\@promotors     {#1}}
+
+\renewcommand\and{\hskip 1em}
+\renewcommand\maketitle{
+\begin{titlepage}
+    \newgeometry{left=43mm,top=20mm,right=43mm}
+
+    \ctufont\@doctype \\
+
+    \includegraphics[height=\dimexpr6\normalbaselineskip-1ex]{\@universitylogo} \\
+    % \ctufont\@faculty \\
+    % \ctufont\@department \\
+
+    \begin{tabular}{@{} l l}
+        \multirow{2}{*}{\color{ctublue}\fontsize{36pt}{36pt}\selectfont\@facultynum}
+        & \ctufont\@faculty \\
+        & \@department \\
+    \end{tabular}
+
+    \vfill
+
+    \ifdefined\@pretitle%
+        \ctufont\small\@pretitle
+    \fi
+
+    \ctufontbf{\color{ctublue}\flushleft{\Huge\expandafter\uppercase\expandafter{\@title}}}
+
+    \vspace{5mm}
+
+    {\color{ctublue} \LARGE\ctufont\@subtitle}
+
+    \vspace{3cm}
+
+    \flushleft{ \large\ctufont\@author}
+
+    \vspace{5mm}
+
+    {\color{ctublue} \large\ctufont\@date}
+
+    \vfill
+
+    \ifdefined\@promotors%
+        \ctufont{\@promotors}
+
+        \vspace{2mm}
+    \fi
+    \restoregeometry
+\end{titlepage}
+}
+
+\endinput

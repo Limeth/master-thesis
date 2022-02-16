@@ -1,0 +1,75 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage{settings}
+
+% PDF Settings
+\hypersetup{%
+    pdftitle={Monolog: Querying Linked Data with High Availability},
+    pdfauthor={Tim Baccaert},
+    pdfsubject={Monolog: Querying Linked Data with High Availability},
+    colorlinks=true,
+    linkcolor=Bittersweet,
+    citecolor=Bittersweet,
+    urlcolor=Bittersweet
+}
+\addbibresource{./refs.bib}
+\let\cleardoublepage=\clearpage
+
+\begin{document}
+
+% Title Page EN
+\title{SimR}
+\subtitle{Simulating the phenomena of altered states of consciousness using virtual reality}
+\author{Jakub Hlusička}
+\doctype{Master~Thesis}
+\universitylogo{ctu/logos/logo_cvut_en.pdf}
+\university{Czech\\Technical\\University\\in~Prague}
+\facultynum{F3}
+\faculty{Faculty~of~Electrical~Engineering}
+\department{Department~of~Computer~Graphics~and~Interaction}
+\promotors{Supervisor: Ing. Josef Kortan}
+\date{2021\textendash2022}
+\maketitle
+
+% % Title Page CZ
+\title{SimR}
+\subtitle{Simulace fenoménů pozměněných stavů vědomí pomocí virtuální reality}
+\author{Jakub Hlusička}
+\doctype{Diplomov\'a~pr\'ace}
+\universitylogo{ctu/logos/logo_CVUT.pdf}
+\university{\v Cesk\'e\\ vysok\'e \\ u\v cen\'i ~technick\'e \\ v~Praze}
+\facultynum{F3}
+\faculty{Fakulta~elektrotechnická}
+\department{Katedra~počítačové~grafiky~a~interakce}
+\promotors{Školitel: Ing. Josef Kortan}
+\date{2021\textendash2022}
+\maketitle
+
+\frontmatter
+\input{./tex/abstract} % Abstract (1 page)
+\input{./tex/acknowledgement} % Acknowledgement (1 page)
+\dominitoc[n] \tableofcontents % Contents (2 pages)
+
+\mainmatter%
+
+\input{./tex/introduction} % Introduction (15 pages) ~ 10 pages related work
+% \input{./tex/background} % Background Section (30 pages)
+% \input{./tex/parallel-datalog} % Parallel Datalog (20 pages)
+% \addtocontents{toc}{\protect\newpage}
+% \input{./tex/monolog} % Monolog (30 pages)
+% \input{./tex/conclusion} % Conclusion (5 pages)
+
+\backmatter%
+
+\appendix
+\makeatletter
+\renewcommand{\thesection}{\thechapter\@arabic\c@section}
+\renewcommand{\thesubsection}{\thesection\@arabic\c@section}
+\renewcommand{\thesubsubsection}{\thesubsection\@arabic\c@section}
+\makeatother
+
+\input{./tex/appendix}
+\addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography{}  % Bibliography (10 pages)
+\end{document}
+
+% approximately: 121 pages

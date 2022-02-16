@@ -1,0 +1,149 @@
+\ProvidesPackage{settings}
+
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{multirow}
+
+\usepackage{ctu/ctu}
+
+% FONT SETTINGS
+% source: https://github.com/sarabander/sicp-pdf/blob/master/src/preamble.tex
+\usepackage[T1]{fontenc}
+% \usepackage[no-math]{fontspec}
+
+% Monospace Font
+\defaultfontfeatures{Scale=MatchLowercase}
+\setmonofont[Path = fonts/]{iosevka-regular}
+
+% Serif Font
+\defaultfontfeatures{%
+    Scale=MatchLowercase,
+    Mapping=tex-text,
+    SmallCapsFeatures={LetterSpace=2.5, WordSpace=1.05},
+}
+\setmainfont{Linux Libertine O}
+
+% Sans-Serif Font
+\setsansfont{Source Serif Pro}
+
+
+% LANGUAGE SETTINGS
+% source: https://github.com/sarabander/sicp-pdf/blob/master/src/preamble.tex
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=american]{english}
+\setotherlanguages{greek, dutch}
+
+% FLOAT TITLES
+\usepackage[titles]{tocloft}
+\newlistof{listing}{lol}{Listings}
+\renewcommand{\cftfigpresnum}{Figure~}
+\renewcommand{\cftlistingpresnum}{Listing~}
+\setlength{\cftfigindent}{0pt}
+\setlength{\cftfignumwidth}{2.5cm}
+\setlength{\cftlistingnumwidth}{2.5cm}
+\let\counterwithout\relax
+\let\counterwithin\relax
+\usepackage{chngcntr}
+\usepackage[labelfont=bf]{caption}
+
+% PACKAGES
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[newfloat,outputdir=build]{minted}
+\usepackage{parskip}
+\usepackage[backend=biber,natbib,hyperref=true,authordate]{biblatex-chicago}
+% \usepackage[backend=biber,natbib,hyperref=true]{biblatex}
+\usepackage{float}
+\usepackage{tocbasic}
+\usepackage{url}
+\urlstyle{same}
+\usepackage[breaklinks]{hyperref}
+% \usepackage[dvipsnames]{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{csquotes}
+\usepackage[top=2.5cm, bottom=3.5cm, left=3.5cm, right=3.5cm, headheight=110pt]{geometry}
+\usepackage{microtype}
+
+\definecolor{darkgray}{gray}{0.25}
+\definecolor{ao}{rgb}{0.0, 0.5, 0.0}
+\definecolor{cardinal}{rgb}{0.77, 0.12, 0.23}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+
+% \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\chaptername\ \thechapter.\ #1}}{}}
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyhead[RE]{{\small \color{darkgray} \textmd{\textsf{\leftmark}}}}
+\fancyhead[LO]{{\small \color{darkgray} \textmd{\textsf{\rightmark}}}}
+\fancyhead[LE,RO]{{\color{darkgray} \textmd{\textsf{\thepage}}}}
+
+\renewcommand\@makefntext[1]{%
+    \parindent 1em%
+    \noindent
+    \color{darkgray}
+    \hb@xt@1.8em{\hss\@makefnmark}#1}
+
+\usepackage{titlesec}
+\definecolor{gray75}{gray}{0.75}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}{%
+    \thechapter\hsp\textcolor{gray75}{|}\hsp}
+{0pt}{\Huge\bfseries}
+
+% MINTED SETTINGS
+\usemintedstyle{friendly}
+\RecustomVerbatimEnvironment{Verbatim}{BVerbatim}{}
+
+\usepackage{minitoc}
+\setlength{\mtcindent}{38pt}
+\mtcsetrules{*}{off}
+
+
+\usepackage[algochapter, ruled, lined, commentsnumbered, longend]{algorithm2e}
+\SetAlgorithmName{Specification}{Specification}{List of Specifications}
+\SetAlgoProcName{Procedure}{\hspace*{-1.5mm}}
+
+% Keywords
+\SetKw{KwState}{state}
+\SetKw{KwUpdate}{update}
+\SetKw{KwSource}{atSource}
+\SetKw{KwDown}{downstream}
+\SetKw{KwLet}{let}
+\SetKw{KwQuery}{query}
+
+
+\usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{property}{Property}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+
+\usepackage[nameinlink]{cleveref}
+
+\crefname{def}{definition}{definition}
+\Crefname{def}{Definition}{Definition}
+\crefname{thm}{theorem}{theorem}
+\Crefname{thm}{Theorem}{Theorem}
+\crefname{lem}{lemma}{lemma}
+\crefname{lem}{Lemma}{Lemma}
+\crefname{cor}{corollary}{corollary}
+\crefname{cor}{Corollary}{Corollary}
+\crefname{exm}{example}{example}
+\Crefname{exm}{Example}{Example}
+
+\crefname{property}{property}{properties}
+\Crefname{property}{Property}{Properties}
+
+\makeatletter
+\AtEveryBibitem{\global\undef\bbx@lasthash}
+\makeatother
