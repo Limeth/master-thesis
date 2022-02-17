@@ -1,0 +1,21 @@
+% URL footnote:
+\fref{URL}{label}
+
+% Non-URL footnote:
+label\footnote{Footnote}
+
+% Citing:
+\autocite{...}
+% or
+\textcite{...}
+
+% Figure:
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth, trim=0 1cm 1cm 1cm]{img/lod_cloud.pdf}
+\caption{A graphical representation of the Web of Linked Data, derived from
+\url{https://www.lod-cloud.net/}.}\label{fig:lod-cloud}
+\end{figure}
+
+% Source monospaced data:
+\lstinputlisting[breaklines, basicstyle={\small\ttfamily}]{data/metro.ttl}

@@ -6,6 +6,11 @@
 
 \usepackage{ctu/ctu}
 
+% footnote URLs
+\newcommand\fref[2]{%
+  \href{#1}{#2}\footnote{\url{#1}}%
+}
+
 % FONT SETTINGS
 % source: https://github.com/sarabander/sicp-pdf/blob/master/src/preamble.tex
 \usepackage[T1]{fontenc}

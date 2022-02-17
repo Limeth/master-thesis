@@ -36,7 +36,7 @@
 \author{Jakub Hlusička}
 \doctype{Diplomov\'a~pr\'ace}
 \universitylogo{ctu/logos/logo_CVUT.pdf}
-\university{\v Cesk\'e\\ vysok\'e \\ u\v cen\'i ~technick\'e \\ v~Praze}
+\university{\v Cesk\'e\\ vysok\'e \\ u\v cen\'i~technick\'e \\ v~Praze}
 \facultynum{F3}
 \faculty{Fakulta~elektrotechnická}
 \department{Katedra~počítačové~grafiky~a~interakce}
@@ -45,20 +45,20 @@
 \maketitle
 
 \frontmatter
-\input{./tex/abstract} % Abstract (1 page)
-\input{./tex/acknowledgement} % Acknowledgement (1 page)
-\dominitoc[n] \tableofcontents % Contents (2 pages)
+\input{tex/abstract}
+\input{tex/acknowledgement}
+\dominitoc[n] \tableofcontents
 
-\mainmatter%
+\mainmatter
 
-\input{./tex/introduction} % Introduction (15 pages) ~ 10 pages related work
-% \input{./tex/background} % Background Section (30 pages)
-% \input{./tex/parallel-datalog} % Parallel Datalog (20 pages)
-% \addtocontents{toc}{\protect\newpage}
-% \input{./tex/monolog} % Monolog (30 pages)
-% \input{./tex/conclusion} % Conclusion (5 pages)
+\input{tex/introduction}
+\input{tex/background}
+\input{tex/implementation}
+\input{tex/evaluation}
+% \addtocontents{toc}{\protect\newpage} % Continue table of contents on next page
+\input{tex/conclusion}
 
-\backmatter%
+\backmatter
 
 \appendix
 \makeatletter
@@ -67,9 +67,7 @@
 \renewcommand{\thesubsubsection}{\thesubsection\@arabic\c@section}
 \makeatother
 
-\input{./tex/appendix}
+% \input{tex/appendix}
 \addcontentsline{toc}{chapter}{Bibliography}
-\printbibliography{}  % Bibliography (10 pages)
+\printbibliography{}
 \end{document}
-
-% approximately: 121 pages
