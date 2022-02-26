@@ -7,4 +7,5 @@ compile: ./main.tex ./settings.sty ./tex/*.tex
 	biber ./build/main
 	xelatex $(FLAGS) ./main.tex
 	xelatex $(FLAGS) ./main.tex
+	cp $(OUTPUT_DIR)/main.pdf ./thesis.pdf
 
