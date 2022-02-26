@@ -11,6 +11,20 @@
   \href{#1}{#2}\footnote{\url{#1}}%
 }
 
+% acronyms with Extra info
+\newcommand\ace[2]{%
+    \aclu{#1} (\acs{#1}\acused{#1}; #2)%
+}
+\newcommand\Ace[2]{%
+    \Acl{#1} (\acs{#1}\acused{#1}; #2)%
+}
+\newcommand\acep[2]{%
+    \aclp{#1} (\acsp{#1}\acused{#1}; #2)%
+}
+\newcommand\Acep[2]{%
+    \Aclp{#1} (\acsp{#1}\acused{#1}; #2)%
+}
+
 % FONT SETTINGS
 % source: https://github.com/sarabander/sicp-pdf/blob/master/src/preamble.tex
 \usepackage[T1]{fontenc}
@@ -70,6 +84,8 @@
 \usepackage{csquotes}
 \usepackage[top=2.5cm, bottom=3.5cm, left=3.5cm, right=3.5cm, headheight=110pt]{geometry}
 \usepackage{microtype}
+% \usepackage[printonlyused,withpage]{acronym}
+\usepackage[printonlyused]{acronym}
 
 \definecolor{darkgray}{gray}{0.25}
 \definecolor{ao}{rgb}{0.0, 0.5, 0.0}
