@@ -6,9 +6,6 @@
 
 \usepackage{ctu/ctu}
 
-% section numbering depth
-\setcounter{secnumdepth}{5}
-
 % footnote URLs
 \newcommand\fref[2]{%
   \href{#1}{#2}\footnote{\url{#1}}%
@@ -171,3 +168,8 @@
 \makeatletter
 \AtEveryBibitem{\global\undef\bbx@lasthash}
 \makeatother
+
+% section numbering depth
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{4}
+\setcounter{minitocdepth}{5}
