@@ -74,9 +74,28 @@ These visual effects are made available to the \ac{DSP} patch, the control of wh
 
 The project demonstrates a method of combining multiple partial effects that results in a complex audio-visual effect that is more sophisticated than many of the existing games exhibiting phenomena of \acp{ASC} surveyed.
 
-\subsubsection{Crystal Vibes}
-\autocite{outram2017crystal}
-tactile stimulation further discussed in \ref{sec:tactile_stimulation_interfaces}
+Interestingly, the authors went on to experiment with a dynamic way of controlling the intensity and parameters of the simulated effects in a follow-up study \autocite{weinel2015quake}. Rather than controlling the parameters using a \textit{pre-determined automation path} via multi-track audio sequencing software, this modification introduced biosensor as a way of influencing the simulation parameters -- specifically, they used the commercial \textit{NeuroSky MindWave} \ac{EEG} device. The study ultimately concludes, that \textquote{while the use of EEG to control psychedelic visual effects is conceptually appealing, the current system would also need to be improved to provide a more tangible connection between the headset and the ASC effects in the game.}
+
+There is no straightforward way to map \ac{EEG} signals onto visual effects. The \ac{EEG} signals need to be interpreted, so that relevant information is extracted. Mapping the extracted information onto specific simulation parameters is then at the artist's discretion. A more sophisticated approach might examine correlations between observed \ac{ASC} phenomena and \ac{EEG} signals, then use those correlations to model the mapping from \ac{EEG} signals onto the visual effects.
+
+\subsubsection{Crystal Vibes feat. Ott.}
+\textcite{outram2017crystal} describe \textit{Crystal Vibes feat. Ott.} as a project originally developed to demonstrate the full-body vibrotactile \textit{Synesthesia Suit}, further discussed in \ref{sec:synesthesia_suit}. The experience places the user into an abstract geometric environment procedurally generated from a soundtrack:
+
+\begin{quote}
+    Crystal Vibes does not use any 3D modelling, 2D design, or hand animation. Instead, the environment is generated using sine and Bézier functions, Bravais lattice structures and Fourier transforms of the audio. Crystal Vibes exploits the innate beauty of 3-dimensional crystal structures, and leverages the artistry of rhythm and form in the music for visual beauty.
+\end{quote}
+
+The article describes in detail the methods employed to simulate audiovisual synesthesia using sound visualization, with an attempt to be \textquote{as physically and biologically defensible as possible}. The methods include compensation for the non-linear perception of both auditory and visual information:
+
+\begin{quote}
+    This includes the fact that humans perceive equal pitch differences corresponding roughly to equal differences in the log of audible frequency, that our perception of volume varies over the audible range, and how humans interpret colour from a visible spectrum.
+\end{quote}
+
+Another technique used to aid in distinguishing different voices of the soundtrack, such as drums and synths, is spatial separation. Each voice would impact a separate region of the visualization. This way, the user can form an association between spatial regions and their corresponding voices.
+
+Finally, the last employed technique of improving the perception of sound via sight is to provide temporal information; instead of only visualizing the current instant of the soundtrack, a roughly 1 second long moving slice of the soundtrack is visualised.
+
+The authors report that users found the visualization compelling, even those who experience synesthesia in their daily lives. Synesthesia is of our interest because it is a prominent phenomenon of some \acp{ASC}.
 
 \subsubsection{Isness}
 \autocite{glowacki2020isness}
@@ -86,9 +105,10 @@ tactile stimulation further discussed in \ref{sec:tactile_stimulation_interfaces
 
 \subsection{Tactile Stimulation Interfaces}\label{sec:tactile_stimulation_interfaces}
 
-\subsubsection{Synesthesia suit for Rez Infinite}
+\subsubsection{Synesthesia suit for Rez Infinite}\label{sec:synesthesia_suit}
 (\textcite{konishi2016synesthesia1}, \textcite{konishi2016synesthesia2} and \textcite{synesthesia2016suit})
 further improved by \autocite{furukawa2019synesthesia}
+\textcite{outram2017crystal}
 
 \subsubsection{Synesthesia X1 - 2.44}
 \autocite{synesthesia2021x1}
