@@ -34,9 +34,19 @@ Most importantly, however, the authors state, that:
 
 Nonetheless, as mentioned previously, care should be taken to ensure that users experiencing the simulation are informed about the simulation not being fully representative of the \ac{ASC} it is modelled after. While a \ac{VR} simulation may be suitable for simulating sensory effects of \acp{ASC}, other effects, such as the effects on cognition, may be much more difficult, if not impossible, to directly replicate via \ac{VR} technologies alone. If uninformed, users may gain a false impression about the \ac{ASC}.
 
+\textcite{greco2021increased} propose that simulated hallucinations may be used to investigate neural mechanisms of conscious perception without difficulties posed by pharmacologically-induced \acp{ASC} --- namely the ethical and legal issues, as well as the the difficulty to isolate the neural effects of psychedelic states from other physiological effects elicited by the drug ingestion. The study used \textit{DeepDream} \autocite{mordvintsev2015inceptionism} to generate hallucinations by modifying a video clip.
+
+\begin{quote}
+    [Their] findings suggest that DeepDream and psychedelic drugs induced similar altered brain patterns and demonstrate the potential of adopting this method to study altered perceptual phenomenology in neuroimaging research.
+\end{quote}
+
+Very recent research \autocite{rastelli2021simulated} indicates that simulated altered perceptual phenomenology enhances cognitive flexibility and inhibits automated decision making. The study describes cognitive flexibility as \textquote{the ability to shift attention between competing concepts and alternatve behavioral policies to meet rapidly changing environmental demands}.
+
 \subsection{Understanding of the Human Mind}
 Finally, without any immediate application, the study of the effects of \acp{ASC} may help contribute to our understanding of the human mind. Particularly, for instance, analyzing the invariant effects of classical psychedelics on sensory perception may improve our understanding of the visual cortex and the way it functions.
 Further research involving perceptual phenomena and pharmacodynamics of psychedelics and their mechanisms of action may contribute to our understanding of the significance of certain receptors in processing visual or other sensory information.
+
+The problem of understanding consciousness has long been of interest to philosophers \autocite{block1993consciousness}, neuroscientists \autocite{crick1990towards}, as well as cognitive psychologists \autocite{dehaene2014consciousness}. Recently, with the resurgence of deep neural networks, attempts to contribute to our understanding of consciousness have also appeared in the field of \ac{AI} (\textcite{bengio2017consciousness}, as well as \textcite{reggia2020artificial}). One such study \autocite{bensemann2021effects} examined the effects of implementing phenomenology (in a broader sense of the word, not psychedelic) into a deep neural network.
 
 \section{Related Work}
 
@@ -98,10 +108,34 @@ Finally, the last employed technique of improving the perception of sound via si
 The authors report that users found the visualization compelling, even those who experience synesthesia in their daily lives. Synesthesia is of our interest because it is a prominent phenomenon of some \acp{ASC}.
 
 \subsubsection{Isness}
-\autocite{glowacki2020isness}
+The paper \autocite{glowacki2020isness} accompanying the project \textit{Isness} proposes that so-called \acp{MTE}, that are often experienced under the influence of psychedelic drugs, may also be facilitated by virtual reality. The paper justifies this proposal by conducting a study with 57 participants analyzing participants' responses to the \ac{MEQ30}, commonly used to evaluate the effects of psychedelic drugs. The results of the study indicated that \textit{Isness} participants reported \acp{MTE} comparable to those reported in double-blind clinical studies after high doses of psilocybin and LSD.
+
+The \ac{VR} application was designed to be used by 4 participants at a time with the \textit{HTC Vive Pro} \acp{HMD}. To provide multiplayer functionality, the client/server architecture was chosen, with each \ac{HMD} being connected to a separate \acs{GPU}-accelerated server.
+
+The abstract virtual environments have been designed by defining a set of `aesthetic hyperparameters', each affecting a different aspect of the simulated \ac{MTE}. The overall \textit{Isness journey} was comprised of a set of states, each of which had some specific time duration. This approach allowed for reproducibility necessary for the study.
+
+Participants were equipped with specially-made `Mudra gloves', which would create a light source within the virtual scene when they made a `mudra pose' by bringing the tip of a thumb to their forefinger or middle finger.
+
+The entire \textit{Isness journey} was divided into 3 phases:
+
+\begin{enumerate}
+    \item Phase 1: Preparation. 15-20 minutes, included information about practical issues (phones off, toilet locations, placing posessions in a safe place), screening, description of the experience, information that the participants could withdraw at any point, and acquisition of verbal and written consent for participation in the study. This phase also included some group exercises to build rapport between participants.
+    \item Phase 2: Multi-person \ac{VR} session. 35 minutes with a pre-recorded narrative soundtrack. The \ac{VR} experience was preceded by a blindfolded, narrated group meditation. Each participant was then fitted with a VR headset and the administrator initiated the \ac{VR} session, moving through 15 prespecified states, each composed from a set of aesthetic hyperparameters.
+    \item Phase 3: Integration. The \acp{HMD} were taken off. Breath exercises and group exercises followed. Participants were then invited to share in a 10-15 minute facilitated discussion, after which they were provided a blank piece of paper for reflective writing, along with a blank \ac{MEQ30}.
+\end{enumerate}
+
+It is fair to say that the \textit{Isness} project focuses mainly on the replication of \acp{MTE}, whose characteristics include a sense of connectedness, transcendence, and ineffability; specifically the effects of \acp{ASC} on emotion and cognition, rather than the effects on sensory perception, as is also evident by the \ac{MEQ30} questionnaire used in the study. This can be seen in the emphasis on the narrated structure of the \textit{Isness journey}, the inclusion of a meditation session, as well as in the multiplayer design of the overall experience, that encourages interaction between participants.
+
+That is to say, the \textit{Isness journey} has been effective in creating a memorable, subjectively meaningful experience comparable to \acp{ASC} induced by psychedelic drugs.
 
 \subsubsection{Hallucination Machine}
 \autocite{suzuki2018hallucination}
+
+\subsubsection{Lucid Loop}
+\autocite{kitson2019lucid}
+
+\subsubsection{Other AI--based Approaches}
+\autocite{schartner2020neural}
 
 \subsection{Tactile Stimulation Interfaces}\label{sec:tactile_stimulation_interfaces}
 
