@@ -46,7 +46,10 @@ Very recent research \autocite{rastelli2021simulated} indicates that simulated a
 Finally, without any immediate application, the study of the effects of \acp{ASC} may help contribute to our understanding of the human mind. Particularly, for instance, analyzing the invariant effects of classical psychedelics on sensory perception may improve our understanding of the visual cortex and the way it functions.
 Further research involving perceptual phenomena and pharmacodynamics of psychedelics and their mechanisms of action may contribute to our understanding of the significance of certain receptors in processing visual or other sensory information.
 
-The problem of understanding consciousness has long been of interest to philosophers \autocite{block1993consciousness}, neuroscientists \autocite{crick1990towards}, as well as cognitive psychologists \autocite{dehaene2014consciousness}. Recently, with the resurgence of deep neural networks, attempts to contribute to our understanding of consciousness have also appeared in the field of \ac{AI} (\textcite{bengio2017consciousness}, as well as \textcite{reggia2020artificial}). One such study \autocite{bensemann2021effects} examined the effects of implementing phenomenology (in a broader sense of the word, not psychedelic) into a deep neural network.
+The problem of understanding consciousness has long been of interest to philosophers \autocite{block1993consciousness}, neuroscientists \autocite{crick1990towards}, as well as cognitive psychologists \autocite{dehaene2014consciousness}. Recently, with the resurgence of deep neural networks, attempts to contribute to our understanding of consciousness have also appeared in the field of \ac{AI} \autocites{bengio2017consciousness}{reggia2020artificial}. One such study \autocite{bensemann2021effects} examined the effects of implementing phenomenology (in a broader sense of the word, not psychedelic) into a deep neural network.
+
+\section{Terminology}
+TODO
 
 \section{Related Work}
 
@@ -128,14 +131,43 @@ It is fair to say that the \textit{Isness} project focuses mainly on the replica
 
 That is to say, the \textit{Isness journey} has been effective in creating a memorable, subjectively meaningful experience comparable to \acp{ASC} induced by psychedelic drugs.
 
-\subsubsection{Hallucination Machine}
-\autocite{suzuki2018hallucination}
+\subsubsection{Hallucination Machine}\label{sec:hallucination_machine}
+\textit{Hallucination Machine} \autocite{suzuki2018hallucination} makes use of the \textit{DeepDream} \autocite{mordvintsev2015inceptionism} technology to alter spherical panoramic video. The altered video is then viewed through a \ac{HMD}. The usage of \textit{DeepDream} successfully simulates the sense of an increased ability to recognize patterns during certain \acp{ASC}.
+
+While it is a compelling concept, there are many drawbacks to this approach.
+
+\begin{enumerate}
+    \item The alteration caused by \textit{DeepDream} is heavily dependent on the source data the \ac{DCNN} is trained with. If, for example, the \ac{DCNN} is trained with images of puppies, the alteration by this \ac{DCNN} will result in \textit{hallucinated} puppies.
+    \item The panoramic spherical videos are not stereoscopic, hence the sense of depth is lost.
+    \item Finally, the fact that the \textit{DeepDream} technology is computationally demanding may have resulted in the choice to use pre-recorded videos rather than real-time footage. This, however, limits the applications of the solution.
+\end{enumerate}
+
+However, what the \textit{DeepDream} technology does well is the simulation of the sense of an increased ability to recognize patterns, otherwise known as pareidolia, characteristic of certain \acp{ASC}. For this reason, it has found popular use in research as a way to simulate hallucinations \autocites{greco2021increased}{rastelli2021simulated}.
 
 \subsubsection{Lucid Loop}
-\autocite{kitson2019lucid}
+\textit{Lucid Loop} \autocite{kitson2019lucid} is a proposed \ac{VR} application that makes use of an \ac{EEG} device (along with other biosensors) for biofeedback. The application is a proposed training aid for maintaining awareness during lucid dreaming, a state reached when a person becomes aware they are dreaming.
+
+The application makes use of a \ac{HMD} to display \textit{DeepDream}-altered \autocite{mordvintsev2015inceptionism} content with the intensity of alteration corresponding to the current brain wave distribution of the wearer --- as higher frequency brain waves dominate, the displayed content becomes less affected by \textit{DeepDream}, resulting in more clarity; as lower frequency brain waves dominate, the displayed content becomes more affected and is interpreted as more dreamy and abstract.
+
+The concept is promising, but the choice of \textit{DeepDream} might prove to be challenging to implement effectively, as the intensity of the \textit{DeepDream} alteration of displayed content is dynamic. The \textit{DeepDream} algorithm would either have to be applied in real-time, which is problematic due to the algorithm's high computational demands, or an optimization scheme would have to be used. One such optimization scheme, assuming spherical panoramic video as displayed content, might pre-render the video as altered by \textit{DeepDream} for several levels of intensity, and then during usage, would interpolate between the pre-rendered videos.
+
+Finally, while the tool is supposed to aid in helping maintain awareness during lucid dreaming, I find it to be a missed opportunity, that the paper does not address the event that high frequency brain waves, while perhaps corresponding to greater awareness, might also cause the dreamer to wake up. A possible improvement of this tool might take this into consideration and also provide biofeedback for this event, such as fading the displayed content to white as the user becomes ``too aware''.
 
 \subsubsection{Other AI--based Approaches}
-\autocite{schartner2020neural}
+\textcite{schartner2020neural} develop two models for generating image distortions reminiscent of verbal reports from clinical trials of \ac{DMT}.
+
+% \begin{figure}%
+%     \centering
+%     \subfloat[\centering label 1]{{\includegraphics[height=5cm]{img/reused/schartner2020neural1.png} }}%
+%     \qquad
+%     \subfloat[\centering label 2]{\copyrightbox[b]{\includegraphics[height=2.5cm]{img/reused/schartner2020neural2.png}}{This is an Open Access article distributed under the terms of the Creative Commons Attribution License (http://creativecommons.org/licenses/by/4.0/), which permits unrestricted reuse, distribution, and reproduction in any medium, provided the original work is properly cited.}}%
+% \caption{2 Figures side by side}%
+%     \label{fig:example}%
+% \end{figure}
+
+In the first approach, the authors employed the \textit{StyleGAN} algorithm \autocite{karras2019cvpr} and modified it such that no noise input was added during the generation process, according to a hypothesized brain mechanism. This resulted in smoother, painterly look of the images.
+
+In the second approach, the authors used the \textit{Fast Neural-Style Pytorch Implementation for Artistic Style Transfer} \autocite{johnson2016perceptual}. This method allows for the depiction of nearly any report of a visual hallucination, assuming one can find a matching content and style image.
 
 \subsection{Tactile Stimulation Interfaces}\label{sec:tactile_stimulation_interfaces}
 
