@@ -158,18 +158,18 @@ Finally, while the tool is supposed to aid in helping maintain awareness during 
 \subsubsection{Other AI--based Approaches}
 \textcite{schartner2020neural} develop two models for generating image distortions reminiscent of verbal reports from clinical trials of \ac{DMT}.
 
-% \begin{figure}%
-%     \centering
-%     \subfloat[\centering label 1]{{\includegraphics[height=5cm]{img/reused/schartner2020neural1.png} }}%
-%     \qquad
-%     \subfloat[\centering label 2]{\copyrightbox[b]{\includegraphics[height=2.5cm]{img/reused/schartner2020neural2.png}}{This is an Open Access article distributed under the terms of the Creative Commons Attribution License (http://creativecommons.org/licenses/by/4.0/), which permits unrestricted reuse, distribution, and reproduction in any medium, provided the original work is properly cited.}}%
-% \caption{2 Figures side by side}%
-%     \label{fig:example}%
-% \end{figure}
-
 In the first approach, the authors employed the \textit{StyleGAN} algorithm \autocite{karras2019cvpr} and modified it such that no noise input was added during the generation process, according to a hypothesized brain mechanism. This resulted in smoother, painterly look of the images.
 
 In the second approach, the authors used the \textit{Fast Neural-Style Pytorch Implementation for Artistic Style Transfer} \autocite{johnson2016perceptual}. This method allows for the depiction of nearly any report of a visual hallucination, assuming one can find a matching content and style image.
+
+\begin{figure}%
+    \centering
+    \subfloat[\centering Effect of \textit{StyleGAN} with varying levels of noise.\ccfootnote{schartner2020neural}{BY-SA}{A cropped version of}{NVIDIA’s generative model with noise perturbation and analogous hypothesized brain mechanism}]{\includegraphics[height=5cm]{img/reused/schartner2020neural1.png}}%
+    \qquad
+    \subfloat[\centering Effect of a style transfer network with varying levels of bias.\ccfootnote{schartner2020neural}{BY-SA}{}{Example output of a style-transfer network}]{\includegraphics[height=2.5cm]{img/reused/schartner2020neural2.png}}%
+    \caption{Results from the modification of \textit{StyleGAN} and the usage of a style transfer network.}%
+    \label{fig:schartner2020neural}%
+\end{figure}
 
 \subsection{Tactile Stimulation Interfaces}\label{sec:tactile_stimulation_interfaces}
 

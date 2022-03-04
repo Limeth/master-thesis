@@ -88,6 +88,7 @@
 \usepackage{microtype}
 % \usepackage[printonlyused,withpage]{acronym}
 \usepackage{acronym}
+\usepackage{ragged2e}
 
 \definecolor{darkgray}{gray}{0.25}
 \definecolor{ao}{rgb}{0.0, 0.5, 0.0}
@@ -175,3 +176,22 @@
 \setcounter{secnumdepth}{5}
 \setcounter{tocdepth}{4}
 \setcounter{minitocdepth}{5}
+
+% license info for reused images
+\DeclareRobustCommand\cctext[4]{%
+    \lowercase{\def\lowercaselicense{#2}}%
+    \uppercase{\def\uppercaselicense{#2}}%
+    #3 ``#4'' released by \textcite{#1} under the {\href{https://creativecommons.org/licenses/\lowercaselicense/4.0/}{CC \uppercaselicense\ 4.0}} license. ©~\textcite{#1}.
+}
+
+\DeclareRobustCommand\ccfootnote[4]{%
+    \footnote{\cctext{#1}{#2}{#3}{#4}}%
+}
+
+% Some black magic by Phelype Oleinik to get footnotes to work in subfigures: https://tex.stackexchange.com/questions/414185/real-footnote-with-subcaption-package#comment1536965_414191
+\usepackage{etoolbox}
+\makeatletter
+\def\atendfigurenotes{}
+\AfterEndEnvironment{figure}{\atendfigurenotes\let\atendfigurenotes\@empty}%
+\makeatother
+\AtBeginEnvironment{figure}{\DeclareRobustCommand\footnote[1]{\footnotemark\xdef\atendfigurenotes{\unexpanded\expandafter{\atendfigurenotes}\noexpand\setcounter{footnote}{\thefootnote}\noexpand\footnotetext\unexpanded{{#1}}}}}
