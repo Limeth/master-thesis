@@ -178,14 +178,30 @@
 \setcounter{minitocdepth}{5}
 
 % license info for reused images
-\DeclareRobustCommand\cctext[4]{%
+\DeclareRobustCommand\cctext[5]{%
     \lowercase{\def\lowercaselicense{#2}}%
     \uppercase{\def\uppercaselicense{#2}}%
-    #3 ``#4'' released by \textcite{#1} under the {\href{https://creativecommons.org/licenses/\lowercaselicense/4.0/}{CC \uppercaselicense\ 4.0}} license. ©~\textcite{#1}.
+    #4 ``#5'' released by \textcite{#1} under the {\href{https://creativecommons.org/licenses/\lowercaselicense/#3/}{CC \uppercaselicense\ #3}} license. ©~\textcite{#1}.
 }
 
-\DeclareRobustCommand\ccfootnote[4]{%
-    \footnote{\cctext{#1}{#2}{#3}{#4}}%
+\DeclareRobustCommand\cczerotext[1]{%
+    Released by #1 under the {\href{https://creativecommons.org/publicdomain/zero/1.0/}{CC0 1.0}} (public domain) license.
+}
+
+\DeclareRobustCommand\crtext[1]{%
+    ©~\textcite{#1}, permission for use granted by the authors.
+}
+
+\DeclareRobustCommand\ccfootnote[5]{%
+    \footnote{\cctext{#1}{#2}{#3}{#4}{#5}}%
+}
+
+\DeclareRobustCommand\cczerofootnote[1]{%
+    \footnote{\cczerotext{#1}}%
+}
+
+\DeclareRobustCommand\crfootnote[1]{%
+    \footnote{\crtext{#1}}%
 }
 
 % Some black magic by Phelype Oleinik to get footnotes to work in subfigures: https://tex.stackexchange.com/questions/414185/real-footnote-with-subcaption-package#comment1536965_414191
