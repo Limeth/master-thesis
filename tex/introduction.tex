@@ -93,7 +93,7 @@ Interestingly, the authors went on to experiment with a dynamic way of controlli
 
 There is no straightforward way to map \ac{EEG} signals onto visual effects. The \ac{EEG} signals need to be interpreted, so that relevant information is extracted. Mapping the extracted information onto specific simulation parameters is then at the artist's discretion. A more sophisticated approach might examine correlations between observed \ac{ASC} phenomena and \ac{EEG} signals, then use those correlations to model the mapping from \ac{EEG} signals onto the visual effects.
 
-\subsubsection{Crystal Vibes feat. Ott.}
+\subsubsection{Crystal Vibes feat. Ott.}\label{sec:crystal_vibes}
 \textcite{outram2017crystal} describe \textit{Crystal Vibes feat. Ott.} as a project originally developed to demonstrate the full-body vibrotactile \textit{Synesthesia Suit}, further discussed in \ref{sec:synesthesia_suit}. The experience places the user into an abstract geometric environment procedurally generated from a soundtrack:
 
 \begin{quote}
@@ -199,20 +199,33 @@ In the second approach, the authors used the \textit{Fast Neural-Style Pytorch I
 \end{figure}
 
 \subsection{Tactile Stimulation Interfaces}\label{sec:tactile_stimulation_interfaces}
+\ac{VR} interfaces provide a way to replace sensory information with information provided by the \ac{VR} application. Different kinds of interfaces have been developed since the conceptualization of \ac{VR}, but among the most practical and commercially available is the \ac{HMD}, which includes stereoscopic screens for visual information, and usually provides a way to substitute auditory information as well, either by providing built-in headphones or an audio connection to connect external headphones to. The main purpose of these interfaces is to provide (or improve the amount of) immersion within the virtual scene.
 
-\subsubsection{Synesthesia suit for Rez Infinite}\label{sec:synesthesia_suit}
-(\textcite{konishi2016synesthesia1}, \textcite{konishi2016synesthesia2} and \textcite{synesthesia2016suit})
-further improved by \autocite{furukawa2019synesthesia}
-\textcite{outram2017crystal}
+Among other \ac{VR} interfaces, \textit{tactile stimulation interfaces} deserve a special mention, because of their relevance to the simulation of \acp{ASC}, in particular, the simulation of haptic and auditory synasthesia, and because of their past usage in related projects. In this section, we mention several of these interfaces.
+
+% \Needspace{200pt}
+\newpage
+\subsubsection{Synesthesia Suit for Rez Infinite}\label{sec:synesthesia_suit}
+\begin{wrapfigure}{r}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth * \real{0.40}]{img/reused/konishi2016synesthesia.png}
+    \caption{The \textit{Synesthesia Suit}.\protect\footnotemark}
+\end{wrapfigure}
+\footnotetext{\crtext{konishi2016synesthesia2}}
+
+The \textit{Synesthesia Suit} \autocites{konishi2016synesthesia1}{konishi2016synesthesia2}{synesthesia2016suit} is a full-body suit that provides haptic sensation via 24 actuators, all of which can be independently controlled. The suit has been developed for the \ac{VR} game \textit{Rez Infinite} \autocite{enhance2016rezinfinite}. The aforementioned \ac{VR} game \textit{Crystal Vibes feat. Ott.} (see \ref{sec:crystal_vibes}; \textcite{outram2017crystal}) has been developed to demonstrate the capabilities of this suit.
+
+In the game \textit{Rez Infinite}, the suit would provide feedback for interactions like shooting, hitting, and warping. The suit would respond to collisions in the virtual world, as well as to the in-game action and sounds.
+
+The design of the \textit{Synesthesia Suit} was later improved by \textit{Synesthesia Wear} \autocite{furukawa2019synesthesia}, which adds wireless connections and improves user intuitiveness and customizability in the placement of the actuators.
 
 \subsubsection{Synesthesia X1 - 2.44}
-\autocite{synesthesia2021x1}
+\textit{Synesthesia X1 - 2.44} \autocite{synesthesia2021x1} is a seat with 2 speakers and 44 vibrotactile actuators. While it has been presented without a \ac{HMD}, the possibility of using a \ac{HMD} while seated is available, but the design of this tactile interface as a seat makes it impossible for the user to move around. Still, it might be suitable used for the development of a more passive \ac{VR} experience.
 
 \subsubsection{Subpac}
-(\textcite{subpac2013subpac}, \textcite{drempetic2017wearable})
-used in \autocite{zimmermann2016longing}
-and studied on deaf people \autocite{schmitz2020hearing}
+Commercial wearable subwoofers, such as the \textit{Subpac} \autocite{subpac2013subpac}, are able to have a significant impact on immersion \autocite{drempetic2017wearable} even for non-\ac{VR} content.
 
+The \textit{Subpac} has been used in \textit{Longing for Wilderness} \autocite{zimmermann2016longing}, a \ac{VR} experience that ``takes you from the noisy city through the slowly transforming forest towards a calm and airy landscape''. The sound design of the application has been specially made with the device in mind.
 
 \section{Contributions}
 We develop a \ac{VR} application for \acp{HMD} that simulates select aspects of \acp{ASC}.
