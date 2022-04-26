@@ -9,6 +9,15 @@
 
 TODO
 
+## Prerequisites
+
+* The Technika font.
+
+```
+$ sudo apt install texlive-xetex texlive-bibtex-extra biber texlive-science
+$ sudo pip3 install pygments
+```
+
 ## Building
 
 ```sh
