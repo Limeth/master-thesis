@@ -6,6 +6,7 @@ compile: ./main.tex ./settings.sty ./tex/*.tex
 	xelatex $(FLAGS) ./main.tex
 	biber ./build/main
 	xelatex $(FLAGS) ./main.tex
+	cp $(OUTPUT_DIR)/main.pdf ./thesis.pdf
 	xelatex $(FLAGS) ./main.tex
 	cp $(OUTPUT_DIR)/main.pdf ./thesis.pdf
 

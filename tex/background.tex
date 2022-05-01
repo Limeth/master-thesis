@@ -6,9 +6,27 @@
 \thispagestyle{empty}
 \newpage
 
-\section{Altered States of Consciousness}
-\subsection{Definition}\label{sec:asc_definition}
+\section{Altered States of Consciousness}\label{sec:asc_definition}
+\textcite{ludwig1966altered} define \acp{ASC} as ,,any mental state(s), induced by various physiological, psychological, or pharmacological maneuvers or agents, which can be recognized subjectively by the individual himself (or by an objective observer of the individual) as representing a sufficient deviation in subjective experience or psychological functioning from certain general norms for that individual during alert, waking consciousness.``
+
+This term is meant to encompass phenomena such as sleep, dream states, day dreaming, hypnosis, sensory deprivation, hysterical states of dissociation and depersonalization, pharmacologically induced mental aberrations and so on, and provide a framework for further analysis of these phenomena.
+
+With regards to psychedelics specifically; \acp{ASC} induced by psychedelics are mainly characterized by profound alterations in sensory perception, mood, thought including the perception of reality, and the sense of self \autocite{preller2016phenomenology}.
+
 \subsection{Aspects}
-\section{Replications}
-\subsection{Replications suitable for Virtual Reality}
+For the purpose of this thesis, we define an \textit{aspect} of an \ac{ASC} as a single, distinctive phenomenon of an \ac{ASC}. An \textit{aspect} does not describe the entirety of the \acp{ASC}, only a particular part of it. In order to model \acp{ASC}, we analyze them and break them down into their respective \textit{aspects}.
+
+An example that is common for \acp{ASC} induced by psychedelics is the distortion in the perception of time.
+
+\subsection{Replications}
+\textit{Replications} are recreations or simulations of one or more aspects of \acp{ASC} using various forms of media (audio, video, tactile, etc.) with the intention of communicating the experience of \acp{ASC}. Many examples are described in section \ref{sec:introduction}. Various artistic replications may be viewed at \textcite{pw2022replications}.
+
+For the rest of this thesis, \textit{a replication} will refer to a recreation or simulation of a \textit{single} aspect of \acp{ASC}. Furthermore, a \textit{complex replication} will refer to a combination of \textit{replications}.
+
+A \textit{replication} of time perception distortion may be simulated via the augmentation of the playback speed of a videoclip using non-linear resampling, or via the augmentation of the simulation speed (timestep) of a \ac{VR} application. This augmentation may be performed by replacing the original sampling function $s \colon \mathbb{R} \to \mathbb{R}$ by $s'(t) = s(t) + f(t)$ where $f \colon \mathbb{R} \to \mathbb{R}$ is a function for sampling procedurally generated noise, such as Perlin noise \autocite{perlin1985image} or Simplex noise \autocite{olano2002simplex}.
+
 \section{Psychometric Evaluation Methods}
+Psychometric evaluation of \acp{ASC} are generally performed via questionnaires, of which there are many available.
+\textcites{schmidt2018empirische}{figueiredobuilding} performed an analysis of 9 such questionnaires and recommends the \acf{11-ASC} and the \ac{PCI} questionnaires for general assessment of \acp{ASC}.
+
+The \ac{11-ASC} was chosen over the \ac{PCI} due to the popularity of the \ac{11-ASC} in the evaluation of psychedelic-induced \acp{ASC}, and because of the complete lack of \ac{VR}-related studies using the \ac{11-ASC}.
