@@ -62,17 +62,17 @@
 % \addtocontents{toc}{\protect\newpage} % Continue table of contents on next page
 \input{tex/conclusion}
 
-\backmatter
+% \backmatter % disable section numbering
 
 \appendix
-\makeatletter
-\renewcommand{\thesection}{\thechapter\@arabic\c@section}
-\renewcommand{\thesubsection}{\thesection\@arabic\c@section}
-\renewcommand{\thesubsubsection}{\thesubsection\@arabic\c@section}
-\makeatother
+% \makeatletter
+% \renewcommand{\thesection}{\thechapter\@arabic\c@section}
+% \renewcommand{\thesubsection}{\thesection\@arabic\c@section}
+% \renewcommand{\thesubsubsection}{\thesubsection\@arabic\c@section}
+% \makeatother
 
 \input{tex/acronyms}
-% \input{tex/appendix}
-\addcontentsline{toc}{chapter}{Bibliography}
 \printbibliography{}
+\addcontentsline{toc}{chapter}{Bibliography}
+\input{tex/appendix-questionnaire}
 \end{document}
