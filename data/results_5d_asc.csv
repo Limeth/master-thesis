@@ -1,0 +1,6 @@
+                       Title	Mean_Control	Mean_Test	Stdev_Control	Stdev_Test	Pearson_Correlation	Observed_Mean_Difference	Variance_of_Differences	t_Statistic	   P	Significance	Confidence_Interval_Control	Confidence_Interval_Test
+        Oceanic Boundlesness	        5.86	    11.16	        10.18	     12.71	               0.71	                   -5.31	                  81.92	      -1.85	 0.1	            	                       7.28	                    9.09
+    Dread of Ego Dissolution	         1.3	     3.48	         2.23	       3.6	               0.74	                   -2.18	                      6	      -2.81	0.02	           *	                       1.59	                    2.58
+Visionary Restructuazilation	        4.04	     8.98	         4.56	      7.79	               0.43	                   -4.94	                  50.79	      -2.19	0.06	            	                       3.26	                    5.57
+        Auditory Alterations	        1.48	     6.15	         2.56	     11.17	               0.36	                   -4.68	                 110.67	      -1.41	0.19	            	                       1.83	                    7.99
+         Vigilance Reduction	        3.74	    12.85	         10.2	     10.99	               0.96	                   -9.11	                  10.42	      -8.92	   0	         ***	                        7.3	                    7.86

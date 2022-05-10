@@ -79,7 +79,12 @@
 \usepackage{url}
 \urlstyle{same}
 \usepackage[breaklinks]{hyperref}
-% \usepackage[dvipsnames]{xcolor}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.16}
+
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
@@ -91,6 +96,16 @@
 \usepackage{ragged2e}
 \usepackage{wrapfig}
 \usepackage{needspace}
+
+%%%%
+% Floating point evaluation using \fpeval
+%
+% Provide the command \fpeval as a copy of the code-level \fp_eval:n.
+\usepackage{expl3}[2012-07-08]
+\ExplSyntaxOn
+\cs_new_eq:NN \fpeval \fp_eval:n
+\ExplSyntaxOff
+%%%%
 
 \definecolor{darkgray}{gray}{0.25}
 \definecolor{ao}{rgb}{0.0, 0.5, 0.0}
@@ -172,6 +187,13 @@
 
 \makeatletter
 \AtEveryBibitem{\global\undef\bbx@lasthash}
+\makeatother
+
+% Check if a string contains a character, e.g.:
+%\if\instring{a}{abcdef}\message{YES}\else\message{NO}\fi
+\makeatletter
+\def\instring#1#2{TT\fi\begingroup
+  \edef\x{\endgroup\noexpand\in@{#1}{#2}}\x\ifin@}
 \makeatother
 
 % signed quote

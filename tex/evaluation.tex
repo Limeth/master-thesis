@@ -1,0 +1,127 @@
+\chapter{Evaluation}
+\vspace{-1.6em}
+\hspace{57pt}{\large\textbf{Contents}}%
+
+\minitoc%
+\thispagestyle{empty}
+\newpage
+
+\section{Methods}
+
+\section{Results}
+
+\DeclareRobustCommand\makeresultstable[3]{
+    \pgfplotstableread[col sep=tab]{#2}#1
+
+    \pgfplotstablegetrowsof{#1}
+    \pgfmathsetmacro{\N}{\pgfplotsretval-1}
+
+    \def\barspacing{2pt}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            xlabel=\% of theoretical maximum,
+            xmajorgrids,
+            enlarge y limits={abs=0.75cm},
+            legend style={
+                at={(0.5,0)},
+                anchor=south,
+                yshift=-2cm,
+                legend columns=-1,
+            },
+            xmin=-5,
+            xmax=30,
+            xbar=\barspacing,
+            bar width=7pt,
+            ytick=data,
+            yticklabels from table={#1}{Title},
+            y tick label style={
+                yshift=0.1cm,
+                xshift=-0.1cm,
+                anchor=east,
+                rotate=45,
+                font=\footnotesize,
+                % font=\scriptsize,
+            },
+            y dir=reverse,
+            reverse legend,
+            cycle list={
+                {red,fill=red!30!white,mark=none},%
+                {blue,fill=blue!30!white,mark=none},%
+                {black,fill=black!30!white,mark=none},%
+            },
+            after end axis/.code={
+                \foreach \i in {0,...,\N}{
+                    \pgfplotstablegetelem{\i}{Significance}\of#1
+                    \let\curr\pgfplotsretval
+                    \pgfplotstablegetelem{\i}{Mean_Test}\of#1
+                    \let\currmeantest\pgfplotsretval
+                    \pgfplotstablegetelem{\i}{Mean_Control}\of#1
+                    \let\currmeancontrol\pgfplotsretval
+                    \pgfplotstablegetelem{\i}{Confidence_Interval_Test}\of#1
+                    \let\currconfinttest\pgfplotsretval
+                    \pgfplotstablegetelem{\i}{Confidence_Interval_Control}\of#1
+                    \let\currconfintcontrol\pgfplotsretval
+                    \pgfmathsetmacro{\yshift}{\fpeval{0.5*{\barspacing+0.5*\pgfkeysvalueof{/pgf/bar width}}}}
+                    \if\instring{*}{\curr}
+                        \StrLen{\curr}[\currast]
+                        \pgfmathsetmacro{\xvaluemax}{26.25}
+                        \pgfmathsetmacro{\xvaluemincontrol}{\fpeval{1+\currmeancontrol+\currconfintcontrol}}
+                        \pgfmathsetmacro{\xvaluemintest}{\fpeval{1+\currmeantest+\currconfinttest}}
+                        \draw
+                            ([yshift=-\yshift]axis cs:\xvaluemintest,\i) --
+                            ([yshift=-\yshift]axis cs:\xvaluemax,\i) --
+                            node[right, yshift=-0.8mm]{\small\curr}
+                            ([yshift=\yshift]axis cs:\xvaluemax,\i) --
+                            ([yshift=\yshift]axis cs:\xvaluemincontrol,\i);
+                    \fi
+                }%
+            },
+            #3
+        ]
+            \draw (0,-100) -- (0,100);
+
+            \addplot+ [
+                error bars/.cd,
+                x dir=both,
+                x explicit,
+            ] table [
+                y expr=\coordindex,
+                x=Mean_Test,
+                x error=Confidence_Interval_Test,
+            ]{#1};
+
+            \addplot+ [
+                error bars/.cd,
+                x dir=both,
+                x explicit,
+            ] table [
+                y expr=\coordindex,
+                x=Mean_Control,
+                x error=Confidence_Interval_Control,
+            ]{#1};
+
+            \legend{Test,Control}
+
+            % \addplot [sharp plot, update limits=false] coordinates {
+            %     (0, -10)
+            %     (0, 100)
+            % };
+
+            % \legend{Test,Control,}
+        \end{axis}
+    \end{tikzpicture}
+}
+
+
+\begin{figure}[H]
+    \centering
+    \makeresultstable{\resultstablefivedasc}{data/results_5d_asc.csv}{width=10cm,height=7cm}
+    \caption{TODO: Add caption}\label{fig:results-5d-asc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \makeresultstable{\resultstablefivedasc}{data/results_11_asc.csv}{width=10cm,height=12cm}
+    \caption{TODO: Add caption}\label{fig:results-11-asc}
+\end{figure}
