@@ -1,0 +1,23 @@
+\chapter{Questionnaire}\label{appendix:questionnaire}
+
+The translated questionnaire consisted of the following 94 questions, with responses in the form of horizontal visual analogue scales, with the left side of the scale labeled as ,,Ne, ne více než obvykle'' (,,No, not more than usually'') and the right side as ,,Ano, více než obvykle'' (,,Yes, much more than usually'').
+
+\DTLsetseparator{|}
+\DTLloaddb[noheader,keys={question}]{questionnaire}{data/questionnaire.txt}
+\newcounter{rowindex}
+
+\DTLforeach{questionnaire}{\inQuestion=question}{%
+    \stepcounter{rowindex}
+    \DTLappendtorow{index}{\therowindex.}
+}
+
+\renewcommand{\arraystretch}{0.75} % tighter row height
+
+\begin{longtable}{@{} r @{ } p{0.9\linewidth} @{}}
+    & \bfseries Question \\
+    \hline
+    \DTLforeach{questionnaire}{\inQuestion=question, \inIndex=index}{%
+        \footnotesize \inIndex & \footnotesize \inQuestion \\
+    }
+\end{longtable}
+\renewcommand{\arraystretch}{1.0} % restore row height
