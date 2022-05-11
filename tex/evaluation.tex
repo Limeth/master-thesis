@@ -6,10 +6,6 @@
 \thispagestyle{empty}
 \newpage
 
-\section{Methods}
-
-\section{Results}
-
 \DeclareRobustCommand\makeresultstable[3]{
     \pgfplotstableread[col sep=tab]{#2}#1
 
@@ -72,7 +68,7 @@
                         \draw
                             ([yshift=-\yshift]axis cs:\xvaluemintest,\i) --
                             ([yshift=-\yshift]axis cs:\xvaluemax,\i) --
-                            node[right, yshift=-0.8mm]{\curr}
+                            node[right, yshift=-0.7mm]{\curr}
                             ([yshift=\yshift]axis cs:\xvaluemax,\i) --
                             ([yshift=\yshift]axis cs:\xvaluemincontrol,\i);
                     \fi
@@ -103,26 +99,72 @@
             ]{#1};
 
             \legend{Test,Control}
-
-            % \addplot [sharp plot, update limits=false] coordinates {
-            %     (0, -10)
-            %     (0, 100)
-            % };
-
-            % \legend{Test,Control,}
         \end{axis}
     \end{tikzpicture}
 }
 
+\section{Methods}
+A controlled within-subject study including N=10 participants, was conducted to investigate whether the implemented complex replication has any effect on the scores of the \ac{5D-ASC} and the \ac{11-ASC} questionnaires.
+
+The following demographic statistics are known about the population:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \item Age: mean of 30 years, standard deviation of 10.1 years.
+    \item Gender: 5 male, 4 female, 1 non-binary.
+\end{itemize}
+
+The requirements for participation in the study, inspired by \textcite{bartossek2021altered}, were as follows:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \item No alcohol use in the past 12 hours prior to the session.
+    \item No \acs{THC} use in the past week prior to the session and no more than twice a week in the last year.
+    \item No use of psychedelic substances in the last two weeks prior to the session.
+    \item Not pregnant.
+    \item 18 years or older.
+\end{itemize}
+
+The participants were required to reserve two sessions, each on a different day, for the active and control scenarios, the order of which was chosen at random. 5 out of 10 participants underwent the control scenario on their first session.
+
+The first session consisted of:
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \item An explanation of the study and the procedure of the session.
+    \item Signing of the informed consent form (see appendix \ref{appendix:informed-consent}).
+    \item Testing of the developed VR application for 10 minutes, with either the control or the test scenario.
+    \item Filling out of the psychometric questionnaire.
+\end{enumerate}
+
+The second session consisted of:
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \item Testing of the developed VR application for 10 minutes, with the remaining scenario.
+    \item Filling out of the psychometric questionnaire.
+\end{enumerate}
+
+\section{Results}
 
 \begin{figure}[H]
     \centering
     \makeresultstable{\resultstablefivedasc}{data/results_5d_asc.csv}{width=10cm,height=7cm}
-    \caption{TODO: Add caption}\label{fig:results-5d-asc}
+    \caption{
+        Resulting scores according to the \ac{5D-ASC} scoring for control and test scenarios.
+        Error bars show the 95\% confidence interval of the true mean, assuming normal distribution.
+        Statistical significance indicated with \raisebox{-0.7ex}{*} ($p < 0.05$) and \raisebox{-0.7ex}{***} ($p < 0.001$).
+    }
+    \label{fig:results-5d-asc}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \makeresultstable{\resultstablefivedasc}{data/results_11_asc.csv}{width=10cm,height=12cm}
-    \caption{TODO: Add caption}\label{fig:results-11-asc}
+    \caption{
+        Resulting scores according to the \ac{11-ASC} scoring for control and test scenarios.
+        Error bars show the 95\% confidence interval of the true mean, assuming normal distribution.
+        Statistical significance indicated with \raisebox{-0.7ex}{*} ($p < 0.05$).
+    }
+    \label{fig:results-11-asc}
 \end{figure}
