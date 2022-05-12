@@ -9,10 +9,10 @@ As an alternative, it may be much more appropriate to use a bounded distribution
 
 \begin{enumerate}
     \item The logit-normal distribution: If $X$ is logit-normally distributed, then $Y = \operatorname{logit}(X) = \ln(\frac{X}{1 - X})$ is normally distributed. Essentially, the $\operatorname{logit}$ transform stretches the lower (0) and upper (1) bounds to infinity (see figure \ref{fig:graph-logit}). However, the $\operatorname{logit}$ transform's domain is an open interval $(0; 1)$, rather than a closed interval $[0; 1]$, which prevents it from being usable with measurements at the bounds. This is, unfortunately, the case for the psychometric questionnaire used in this study, as participants may answer with $0\%$ or $100\%$.
-    \item The beta distribution: Doesn't suffer from the necessity of using an transform that would be undefined on the bounds. Possibly even more expressive than the logit-normal distribution.
+    \item The beta distribution: Doesn't suffer from the necessity of using a transform that would be undefined at the bounds. Possibly even more expressive than the logit-normal distribution.
 \end{enumerate}
 
-I suspect the main challenge of using these alternative distributions comes with the testing of hypotheses. With these distributions, we can no longer use standard statistical methods of analysis, that are only applicable to normally distributed data.
+I suspect the main challenge of using these alternative distributions comes with the testing of hypotheses. With these distributions, we can no longer use standard statistical methods of analysis only applicable to normally distributed data.
 
 I don't believe this finding invalidates past studies, but it may serve as a place for improvement of future ones.
 
