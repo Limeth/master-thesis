@@ -158,7 +158,9 @@ Based on these results, we \textbf{reject} the null hypothesis $H_0$, that ``the
 
 \begin{figure}[H]
     \centering
-    \makeresultstable{\resultstablefivedasc}{data/results_5d_asc.csv}{width=10cm,height=7cm}
+    \ifgraphics
+        \makeresultstable{\resultstablefivedasc}{data/results_5d_asc.csv}{width=10cm,height=7cm}
+    \fi
     \caption{
         Resulting scores according to the \ac{5D-ASC} scoring for control and test scenarios.
         Error bars show the 95\% confidence interval of the true mean, assuming normal distribution.
@@ -169,7 +171,9 @@ Based on these results, we \textbf{reject} the null hypothesis $H_0$, that ``the
 
 \begin{figure}[H]
     \centering
-    \makeresultstable{\resultstablefivedasc}{data/results_11_asc.csv}{width=10cm,height=12cm}
+    \ifgraphics
+        \makeresultstable{\resultstablefivedasc}{data/results_11_asc.csv}{width=10cm,height=12cm}
+    \fi
     \caption{
         Resulting scores according to the \ac{11-ASC} scoring for control and test scenarios.
         Error bars show the 95\% confidence interval of the true mean, assuming normal distribution.

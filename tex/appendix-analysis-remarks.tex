@@ -29,26 +29,28 @@ I don't believe this finding invalidates past studies, but it may serve as a pla
 \begin{figure}[h]
     \centering
 
-    \begin{tikzpicture}
-    \begin{axis}[
-        xlabel={$X$},
-        ylabel={$\operatorname{logit}(X)$},
-        samples=1000,
-        grid,
-        thick,
-        domain=0.0000001:0.9999999,
-        xmin=0,
-        xmax=1,
-        ymin=-10,
-        ymax=10,
-        legend pos=outer north east,
-    ]
+    \ifgraphics
+        \begin{tikzpicture}
+        \begin{axis}[
+            xlabel={$X$},
+            ylabel={$\operatorname{logit}(X)$},
+            samples=1000,
+            grid,
+            thick,
+            domain=0.0000001:0.9999999,
+            xmin=0,
+            xmax=1,
+            ymin=-10,
+            ymax=10,
+            legend pos=outer north east,
+        ]
 
-        \addplot+ [no marks] { \logit(x) };
+            \addplot+ [no marks] { \logit(x) };
 
-    % \addlegendentry{y=$\operatorname{logit}(x)$}
-    \end{axis}
-    \end{tikzpicture}
+        % \addlegendentry{y=$\operatorname{logit}(x)$}
+        \end{axis}
+        \end{tikzpicture}
+    \fi
 
     \caption{
         The $\operatorname{logit}$ transform.
@@ -58,60 +60,65 @@ I don't believe this finding invalidates past studies, but it may serve as a pla
 
 \begin{figure}[h]
     \centering
+
     \subfloat[\centering Examples of logit-normal distributions of random variable $X$.]{
-        \begin{tikzpicture}
-        \begin{axis}[
-            width=6cm,
-            xlabel={$x$},
-            ylabel={$f_{\operatorname{logit-normal}}(x)$},
-            samples=200,
-            grid,
-            thick,
-            domain=0.0000001:0.9999999,
-            xmin=0,
-            xmax=1,
-            ymin=0,
-            ymax=10,
-            legend pos=outer north east,
-            cycle list name=exotic,
-        ]
+        \ifgraphics
+            \begin{tikzpicture}
+            \begin{axis}[
+                width=6cm,
+                xlabel={$x$},
+                ylabel={$f_{\operatorname{logit-normal}}(x)$},
+                samples=200,
+                grid,
+                thick,
+                domain=0.0000001:0.9999999,
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=10,
+                legend pos=outer north east,
+                cycle list name=exotic,
+            ]
 
-            \addplot+ [no marks] { \pdflogitnorm(x, 0, 1) };
-            \addplot+ [no marks] { \pdflogitnorm(x, 1, 1) };
-            \addplot+ [no marks] { \pdflogitnorm(x, -1, 2) };
-            \addplot+ [no marks] { \pdflogitnorm(x, 2, 0.5) };
+                \addplot+ [no marks] { \pdflogitnorm(x, 0, 1) };
+                \addplot+ [no marks] { \pdflogitnorm(x, 1, 1) };
+                \addplot+ [no marks] { \pdflogitnorm(x, -1, 2) };
+                \addplot+ [no marks] { \pdflogitnorm(x, 2, 0.5) };
 
-        % \addlegendentry{y=$\operatorname{logit}(x)$}
-        \end{axis}
-        \end{tikzpicture}
+            % \addlegendentry{y=$\operatorname{logit}(x)$}
+            \end{axis}
+            \end{tikzpicture}
+        \fi
     }%
     \quad
     \subfloat[\centering The corresponding normal distributions of $Y = \operatorname{logit}(X)$.]{
-        \begin{tikzpicture}
-        \begin{axis}[
-            width=6cm,
-            xlabel={$x$},
-            ylabel={$f_{\operatorname{normal}}(x)$},
-            samples=200,
-            grid,
-            thick,
-            domain=-5:5,
-            xmin=-5,
-            xmax=5,
-            ymin=0,
-            ymax=1,
-            legend pos=outer north east,
-            cycle list name=exotic,
-        ]
+        \ifgraphics
+            \begin{tikzpicture}
+            \begin{axis}[
+                width=6cm,
+                xlabel={$x$},
+                ylabel={$f_{\operatorname{normal}}(x)$},
+                samples=200,
+                grid,
+                thick,
+                domain=-5:5,
+                xmin=-5,
+                xmax=5,
+                ymin=0,
+                ymax=1,
+                legend pos=outer north east,
+                cycle list name=exotic,
+            ]
 
-            \addplot+ [no marks] { \pdfnorm(x, 0, 1) };
-            \addplot+ [no marks] { \pdfnorm(x, 1, 1) };
-            \addplot+ [no marks] { \pdfnorm(x, -1, 2) };
-            \addplot+ [no marks] { \pdfnorm(x, 2, 0.5) };
+                \addplot+ [no marks] { \pdfnorm(x, 0, 1) };
+                \addplot+ [no marks] { \pdfnorm(x, 1, 1) };
+                \addplot+ [no marks] { \pdfnorm(x, -1, 2) };
+                \addplot+ [no marks] { \pdfnorm(x, 2, 0.5) };
 
-        % \addlegendentry{y=$\operatorname{logit}(x)$}
-        \end{axis}
-        \end{tikzpicture}
+            % \addlegendentry{y=$\operatorname{logit}(x)$}
+            \end{axis}
+            \end{tikzpicture}
+        \fi
     }%
     \caption{Examples of the logit-normal distribution and their corresponding normal distributions.}%
     \label{fig:mordvintsev2015inceptionism}%
@@ -120,32 +127,34 @@ I don't believe this finding invalidates past studies, but it may serve as a pla
 \begin{figure}[h]
     \centering
 
-    \begin{tikzpicture}
-    \begin{axis}[
-        xlabel={$x$},
-        ylabel={$f_{\operatorname{beta}}$},
-        samples=200,
-        grid,
-        thick,
-        domain=0.0000001:0.9999999,
-        xmin=0,
-        xmax=1,
-        ymin=0,
-        ymax=10,
-        cycle list name=exotic,
-        % restrict y to domain,
-        % legend pos=outer north east,
-    ]
+    \ifgraphics
+        \begin{tikzpicture}
+        \begin{axis}[
+            xlabel={$x$},
+            ylabel={$f_{\operatorname{beta}}$},
+            samples=200,
+            grid,
+            thick,
+            domain=0.0000001:0.9999999,
+            xmin=0,
+            xmax=1,
+            ymin=0,
+            ymax=10,
+            cycle list name=exotic,
+            % restrict y to domain,
+            % legend pos=outer north east,
+        ]
 
-        \addplot+ [no marks] gnuplot { \pdfbeta(x, 2, 2) };
-        \addplot+ [no marks] gnuplot { \pdfbeta(x, 2, 5) };
-        \addplot+ [no marks] gnuplot { \pdfbeta(x, 1, 5) };
-        \addplot+ [no marks] gnuplot { \pdfbeta(x, 50, 10) };
-        \addplot+ [no marks] gnuplot { \pdfbeta(x, 1, 1) };
+            \addplot+ [no marks] gnuplot { \pdfbeta(x, 2, 2) };
+            \addplot+ [no marks] gnuplot { \pdfbeta(x, 2, 5) };
+            \addplot+ [no marks] gnuplot { \pdfbeta(x, 1, 5) };
+            \addplot+ [no marks] gnuplot { \pdfbeta(x, 50, 10) };
+            \addplot+ [no marks] gnuplot { \pdfbeta(x, 1, 1) };
 
-    % \addlegendentry{y=$\operatorname{logit}(x)$}
-    \end{axis}
-    \end{tikzpicture}
+        % \addlegendentry{y=$\operatorname{logit}(x)$}
+        \end{axis}
+        \end{tikzpicture}
+    \fi
 
     \caption{
         Examples of the beta distribution. Note that the beta distribution, as opposed to the logit-normal distribution, is also able to express a uniform distribution with parameters $\alpha=1, \beta=1$.

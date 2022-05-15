@@ -14,7 +14,21 @@
 \addbibresource{./refs.bib}
 \let\cleardoublepage=\clearpage
 
+% Enable/Disable graphics to speed up rendering/compilation time during writing.
+% Use `\ifgraphics ... \figraphics` to declare blocks affected by the toggle.
+\newif\ifgraphics
+\graphicstrue  % Enable graphics
+% \graphicsfalse % Disable graphics
+
 \begin{document}
+
+% Warning about the graphics being disabled, if that's the case.
+\ifgraphics\else
+    \begin{huge}
+        \textcolor{red}{Graphics are disabled. Document is incomplete.}\\
+        Enable graphics by using \texttt{\textbackslash graphicstrue} in \texttt{main.tex}.
+    \end{huge}
+\fi
 
 % Title Page EN
 \title{SimR}
