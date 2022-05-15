@@ -146,6 +146,20 @@ The second session consisted of:
     \item Filling out of the psychometric questionnaire.
 \end{enumerate}
 
+The study was conducted with the following hardware specifications.
+
+\begin{center}
+\begin{tabular}{r l}
+    \acs{HMD} & HTC Vive Pro \\
+    Tracking & 2 SteamVR Base Stations 2.0 \\
+    \acs{CPU} & Intel\textregistered\ Core™ i9-10900X \\
+    \acs{GPU} & NVIDIA\textregistered\ GeForce\textregistered\ RTX 2080 Ti \\
+    \acs{RAM} Capacity & 128 GB \\
+\end{tabular}
+\end{center}
+
+\newpage % without this, the pages are stretched
+
 \section{Results}
 
 With the assumption that the individual factors of each of the scorings are normally distributed, we used the repeated measures \textit{paired t-test} to test our hypotheses. Most recent studies utilizing the \ac{5D-ASC} and the \ac{11-ASC} scorings assume the resulting factors to be normally distributed, and so do we. For alternatives, see appendix \ref{appendix:analysis-remarks}.
@@ -156,7 +170,7 @@ The results of the \ac{11-ASC} scorings can be seen in figure \ref{fig:results-1
 
 Based on these results, we \textbf{reject} the null hypothesis $H_0$, that ``the implemented complex replication \textbf{does not have any} effect on the scores of the \ac{5D-ASC} and \ac{11-ASC} scorings.''
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \ifgraphics
         \makeresultstable{\resultstablefivedasc}{data/results_5d_asc.csv}{width=10cm,height=7cm}
@@ -169,7 +183,7 @@ Based on these results, we \textbf{reject} the null hypothesis $H_0$, that ``the
     \label{fig:results-5d-asc}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \ifgraphics
         \makeresultstable{\resultstablefivedasc}{data/results_11_asc.csv}{width=10cm,height=12cm}

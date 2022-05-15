@@ -73,4 +73,35 @@ The final scene contains a flat patch of grass and other low foliage the size of
 \subsubsection{Tracers}
 \section{Complex Replication}
 \subsection{Execution Order}
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \begin{tikzpicture}[node distance = 2cm, auto]
+            \tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=1em]
+            \tikzstyle{line} = [draw, -latex']
+
+            \node [block] (wiggle) {Object Waviness};
+            \node [block, below=0.5cm of wiggle] (depthperception) {Depth Perception Distortion};
+            \node [block, below=1.25cm of depthperception] (sharpen) {Sharpening};
+            \node [block, below=0.5cm of sharpen] (tracers) {Tracers};
+            \node [block, below=1.25cm of tracers] (contrast) {Contrast and Saturation};
+
+            \node [draw, densely dotted, minimum width=12cm, inner sep=0.5cm, fit=(wiggle)(depthperception)] (scopematerial) {};
+            \node [draw, densely dotted, minimum width=12cm, inner sep=0.5cm, fit=(sharpen)(tracers)] (scopeplugin) {};
+            \node [draw, densely dotted, minimum width=12cm, inner sep=0.5cm, fit=(contrast)] (scopeengine) {};
+
+            \node [below right, text width=0.5\textwidth] at (scopematerial.north west) {{\scriptsize Material Graph\\Vertex Shader}};
+            \node [below right, text width=0.5\textwidth] at (scopeplugin.north west) {{\scriptsize Engine Plugin Modifying the \acs{RDG}\\Post-Processing}};
+            \node [below right, text width=0.5\textwidth] at (scopeengine.north west) {{\scriptsize Engine Built-in\\Post-Processing}};
+
+            \path [line] (wiggle) -> (depthperception);
+            \path [line] (depthperception) -> (sharpen);
+            \path [line] (sharpen) -> (tracers);
+            \path [line] (tracers) -> (contrast);
+        \end{tikzpicture}
+    \fi
+    \caption{The execution order of partial replications, making up the complex replication.}\label{fig:scene-preview}
+\end{figure}
+
 \subsection{Experiment Automation}\label{sec:experiment_automation}
