@@ -61,21 +61,164 @@ The final scene contains a flat patch of grass and other low foliage the size of
 \end{figure}
 
 \section{Implementation of Replications}
-
-\autocites{preller2016phenomenology}{kometer2016serotonergic}{kleinman1977comparison}
+The following replications are modelled after surveys of the phenomenology of psychedelic states \autocites{preller2016phenomenology}{kometer2016serotonergic} and personal reports \autocite{kleinman1977comparison}.
 
 \subsection{Spatial Effects}
-\subsubsection{Depth Perception Distortion}
+The spacial effects of this section are a form of a vertex shader, or part thereof. \ac{UE4} has a concept of so-called ``materials'' -- assets that can be applied to meshes to control the visual look of 3D assets. \ac{UE4} materials are defined using a built-in visual programming node graph. While this approach of specifying \ac{GPU} shader logic allows for tighter integration with \ac{UE4}'s rendering engine and its lighting model, it makes it difficult to use conventional shading languages such as \ac{GLSL} or \ac{HLSL}. The usage of conventional shading languages is sometimes desirable, because the provided material node graph editor cannot, by design, express some control flow constructs, such as loops.
 
-\autocites{fischer1970psilocybin}{dittrich1998standardized}{hill1969effects}{hill1973induction}
+However unwieldy, it is possible to use \ac{HLSL} code in material graphs, in \ac{UE4}. The directory of our custom \ac{HLSL} shader files must be properly registered in the engine via an engine plugin \autocite{synthenz2021shaderdir}. The shader files can then be referenced from within ``custom'' nodes of the material node graph editor.
+
+\subsubsection{Depth Perception Distortion}
+This replication simulates the distorted perception of depth, micropsia, and macropsia \autocites{fischer1970psilocybin}{dittrich1998standardized}{hill1969effects}{hill1973induction}.
+
+\subsubsubsection{First Attempt}
+Our first attempt made use of a self-similar, bijective and continuous function $f$ to modify the distance of vertices from the \ac{HMD}. The self-similarity is required to ensure that no self-intersection of geometry occurs, after the offset has been applied.
+
+\begin{equation}
+    \scalebox{1.5}{
+        $f(r) = a^{\frac{1}{\pi}\sin(\pi \log_a{r}) + \log_a{r}}$
+    }
+    \label{eq:depth-perception-f}
+\end{equation}
+
+Where $a \in (1; +\infty)$.
+
+The interesting property of self-similarity results in the maximum offset being directly proportional to the distance of the \ac{HMD}. The graph of the function can be seen in figure \ref{fig:depth-perception-f}.
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        {
+            \def\consta{1.5}
+
+            \subfloat[\centering Modified distance from the \ac{HMD}. Green line corresponds to the identity function for reference.]{
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        xlabel style={align=center},
+                        ylabel style={align=center},
+                        xlabel=$r$\\Original Distance from \ac{HMD},
+                        ylabel=Modified Distance from \ac{HMD}\\$f(r)$,
+                        samples=1000,
+                        grid,
+                        thick,
+                        domain=0:5,
+                        xmin=0,
+                        xmax=5,
+                        ymin=0,
+                        ymax=5,
+                        legend pos=outer north east,
+                        no marks,
+                        unit vector ratio={1, 1},
+                    ]
+                    \addplot+[black!30!green, fill opacity=0.7] gnuplot {x};
+                    \addplot+[black] gnuplot {sgn(x) * (\consta)**((1/pi) * sin(pi * log(abs(x)) / log(\consta)) + log(abs(x)) / log(\consta))};
+                    \end{axis}
+                \end{tikzpicture}
+            }
+
+            \subfloat[\centering Distance offset from the \ac{HMD}. Green line corresponds to the X axis for reference. Note that the maximum distance offset is directly proportional to the distance from the \ac{HMD}.]{
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        xlabel style={align=center},
+                        ylabel style={align=center},
+                        xlabel=$r$\\Original Distance from \ac{HMD},
+                        ylabel=Distance Offset from \ac{HMD}\\$f(r) - r$,
+                        samples=1000,
+                        grid,
+                        thick,
+                        domain=0:5,
+                        xmin=0,
+                        xmax=5,
+                        ymin=-1,
+                        ymax=1,
+                        legend pos=outer north east,
+                        no marks,
+                        unit vector ratio={1, 1},
+                        ytick = {-1, 0, 1},
+                    ]
+                    \addplot+[black!30!green, fill opacity=0.7] gnuplot {0};
+                    \addplot+[black] gnuplot {(sgn(x) * (\consta)**((1/pi) * sin(pi * log(abs(x)) / log(\consta)) + log(abs(x)) / log(\consta))) - x};
+                    \end{axis}
+                \end{tikzpicture}
+            }
+        }
+    \fi
+    \caption{First attempt at distorting depth perception, unused in the final application. The function $f$ from equation \ref{eq:depth-perception-f} modifies the distance of vertices from the \ac{HMD}. Parameter $a = 1.5$.}\label{fig:depth-perception-f}
+\end{figure}
+
+Although this first iteration resulted in visually enticing results, we also noticed that it caused motion sickness in \ac{VR}, particularly during the user's movement. We believe the motion sickness was caused by clusters of geometry moving with the position of the \ac{HMD}, as if attracted to it, and caused a discrepancy between the user's vestibular system and the visual information.
+
+Another disadvantage of this solution is its predictability and the synthetic look caused by its uniformity.
+
+\subsubsubsection{Final Solution}
+In order to break up clusters of similarly affected geometry, we decided to use procedural noise. Procedural noise has been used for the generation of textures \autocite{perlin1985image}, and would be suitable to create a less predictable, more chaotic effect.
+
+There are various kinds of procedural noise used in computer graphics. We found Simplex noise \autocite{olano2002simplex} to be suitable for our use-case, particularly for its $\mathcal{O}(n^2)$ time complexity in $n$ dimensions, lack of directional artifacts (visual isotropy), and a well-defined continuous gradient.
+
+Let's denote the simplex noise sampling function as $s \colon \mathbb{R}^n \to \mathbb{R}$.
+
+Now that we have a way to sample the noise, we could try to use the noise sample (possibly scaled by a constant) as the offset of the distance of each vertex to the \ac{HMD}, as shown in the previous section. To retrieve the sample, we can use:
+
+\begin{equation}
+    s' \coloneqq s\left(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+\end{equation}
+
+where $s'$ is the resulting sample, $x$, $y$ and $z$ are spacial coordinates of any point in space (typically the position of a vertex), $t$ is the current time in seconds, and $f_s$ and $f_t$ are space-wise and time-wise frequencies of the noise, respectively.
+
+With the addition of the time coordinate, resulting in 4-dimensional noise, the sampled offset value will change over time. This helps break up the uniformity and predictability of the previous solution.
+
+Unfortunately, we have lost one important property of the previous solution: The fact that the maximum offset was directly proportional to the distance from the \ac{HMD}. We could try to reintroduce proportionality naively by multiplying the sample by the distance $r$:
+
+\begin{equation}
+    s' \coloneqq r \cdot s\left(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+\end{equation}
+
+By this modification, we have effectively changed the amplitude of the noise, yet the frequency remains the same -- and uniform. If we were to use this sample $s'$ as the distance offset, we would cause distant geometry to self-intersect. Therefore, a different solution is needed.
+
+\Ac{fBm} to the rescue! Before we go into how \ac{fBm} can help resolve this issue, let's briefly describe how it is used in noise synthesis. \ac{fBm} is a technique of combining layers of noise, while varying their amplitudes and frequencies.
+
+\begin{equation}\label{eq:fbm1}
+    s' \coloneqq \sum_{i=0}^{k-1} g^i \cdot s\left(l^{i} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+\end{equation}
+
+In equation \ref{eq:fbm1}, we combine $k \in \mathbb{N}$ layers of simplex noise. The parameter $g \in \mathbb{R}$ (gain) changes the amplitude of each layer, and the parameter $l \in \mathbb{R}$ (lacunarity) changes the frequency of each layer. Typically, $l = \frac{1}{g}$; in that case, we are generating so-called ``pink noise''.
+
+Now, back to our original problem of keeping the amplitude proportional to the distance from the \ac{HMD}. Instead of using $k$ layers of noise with indices $i = 0, 1, \dots, k - 1$, we can offset the indices by an integer value depending on the distance from the \ac{HMD}. If we do so carefully, we will recover the direct proportionality.
+
+\begin{equation}\label{eq:fbm2}
+    s' \coloneqq \sum_{i=0}^{k-1} g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+\end{equation}
+
+Equation \ref{eq:fbm2} differs from equation \ref{eq:fbm1} in that we have added an index offset $j(r)$, which is computed from the distance to the \ac{HMD}. We will define this function shortly, but for now, it suffices to know that it is a non-decreasing function. Now we are able to offset the indices. However, this will result in noticeable discontinuities of the noise at the discontinuities of $j(r)$.
+
+In order to remove these discontinuities, we shall introduce blending. Let us refer to the layers at indices $j(r), j(r) + 1, \dots, j(r) + k - 1$ as ``active layers'', the layer at index $j(r)$ as ``the first active layer'' and the layer at index $j(r) + k - 1$ as ``the last active layer''.
+
+\begin{equation}\label{eq:fbm3}
+    s' \coloneqq \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+\end{equation}
+
+We have added a weight function $w \colon \mathbb{Z} \times \mathbb{R} \to [0; 1]$, which will attenuate the first and last active layer, while leaving other layers unaffected. Notice a subtle change -- we have also changed the upper index of the sum from $k - 1$ to $k$, to account for the attenuation.
+
+Let us define $w$ as:
+
+\begin{equation}
+    w(i, r) =
+    \begin{cases}
+        m(r) - j(r) & \text{if } i = 0 \\
+        1 - (m(r) - j(r)) & \text{if } i = k \\
+        1 & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+
 
 \begin{figure}[H]
     \centering
     \ifgraphics
         {
             \def\constepsilon{0.001}
-            \def\constymin{-13}
-            \def\constymax{7}
+            \def\constymin{-10}
+            \def\constymax{10}
             \def\constm{4}
             \def\consta{1.5}
             \def\fnf(#1){(ln(#1) / ln(\consta))}
@@ -90,14 +233,15 @@ The final scene contains a flat patch of grass and other low foliage the size of
                     samples=1000,
                     grid,
                     thick,
-                    domain=0.0000001:10,
+                    domain=0.0000001:30,
                     xmin=0,
-                    xmax=10,
+                    xmax=30,
                     ymin=\constymin,
                     ymax=\constymax,
                     legend pos=outer north east,
                     no marks,
-                    ytick = {-10, -5, 0, 5},
+                    unit vector ratio={1, 1},
+                    ytick = {-10, -5, 0, 5, 10},
                     minor y tick num=4,
                 ]
                     \foreach \y in {\constymin, ..., \constymax}{
@@ -122,7 +266,50 @@ The final scene contains a flat patch of grass and other low foliage the size of
             \end{tikzpicture}
         }
     \fi
-    \caption{Computation of active octaves based on the distance from the \ac{HMD}. Active octaves as solid black lines. Green areas correspond to the weight of the first and last currently active octave.}\label{fig:sharpening}
+    \caption{Computation of active octaves based on the distance from the \ac{HMD}. Active octaves as solid black lines. Green areas correspond to the weight of the first and last currently active octave.}\label{fig:noise-octaves}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        {
+            \def\constepsilon{0.001}
+            \def\constymin{-13}
+            \def\constymax{7}
+            \def\constm{4}
+            \def\consta{1.5}
+            \def\fnf(#1){(ln(#1) / ln(\consta))}
+            \def\fnfinv(#1){((\consta)^(#1))}
+            \def\fnoctave(#1){(floor(\fnf(#1)))}
+
+            \begin{tikzpicture}
+                \begin{axis}[
+                    xlabel={Distance from \ac{HMD}},
+                    ylabel={Active Octave Amplitudes},
+                    samples=1000,
+                    grid,
+                    thick,
+                    domain=0.0000001:30,
+                    xmin=0,
+                    xmax=30,
+                    ymin=0,
+                    ymax=30,
+                    legend pos=outer north east,
+                    no marks,
+                    unit vector ratio={1, 1},
+                    % ytick = {-10, -5, 0, 5},
+                    % minor y tick num=4,
+                ]
+                \addplot+[black!30!green, fill opacity=0.7] {x};
+                \addplot+[draw=black, solid, jump mark mid] {\fnfinv((\fnoctave(x) - 0))};
+                \addplot+[draw=black, solid, jump mark mid] {\fnfinv((\fnoctave(x) - 1))};
+                \addplot+[draw=black, solid, jump mark mid] {\fnfinv((\fnoctave(x) - 2))};
+                \addplot+[draw=black, solid, jump mark mid] {\fnfinv((\fnoctave(x) - 3))};
+                \end{axis}
+            \end{tikzpicture}
+        }
+    \fi
+    \caption{Amplitudes of active octaves based on the distance from the \ac{HMD}. Active octaves as solid black lines. The green line shows the direct proportionality of the maximum active octave amplitude and the distance from the \ac{HMD}.}\label{fig:noise-amplitudes}
 \end{figure}
 
 \subsubsection{Visual Drifting}

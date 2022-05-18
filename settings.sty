@@ -1,5 +1,6 @@
 \ProvidesPackage{settings}
 
+\usepackage{mathtools}
 \usepackage{siunitx}
 \usepackage{ifthen}
 \usepackage{datatool}
@@ -104,6 +105,8 @@
 \usepackage{ragged2e}
 \usepackage{wrapfig}
 \usepackage{needspace}
+
+\def\subsubsubsection#1{\paragraph{#1}}
 
 %%%%
 % Floating point evaluation using \fpeval
