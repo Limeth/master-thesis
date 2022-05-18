@@ -1,7 +1,7 @@
 \chapter{Implementation}
 The objective of this part of the project was to implement an immersive replication of \acp{ASC} induced by classical psychedelics. In order to achieve a high degree of immersion, our solution was designed to be intended for immersive \ac{VR} systems with \acp{HMD}. Our solution will be referred to with \textit{``the application''} or \textit{``our application''} for the rest of this document.
 
-To represent the \acp{ASC} of classical psychedelics objectively, we had to resort to modelling only the ``perceptual level'' stage of the psychedelic experience (as seen in \ref{fig:temporal-dynamics}), as further stages require subjective personalization of content, and aspects less suitable for replication via immersive \ac{VR}, such as cognitive effects and the suppression of the \textit{phenomenological ego}.
+To represent the \acp{ASC} of classical psychedelics objectively, we had to resort to modelling only the ``perceptual level'' stage of the psychedelic experience (as seen in figure \ref{fig:temporal-dynamics}), as further stages require subjective personalization of content, and aspects less suitable for replication via immersive \ac{VR}, such as cognitive effects and the suppression of the \textit{phenomenological ego}.
 
 \section{Design of the Application}
 The application was designed primarily for the evaluation of the implemented replication. The development of the application consisted of 3 distinct parts:
@@ -61,16 +61,165 @@ The final scene contains a flat patch of grass and other low foliage the size of
 \end{figure}
 
 \section{Implementation of Replications}
+
+\autocites{preller2016phenomenology}{kometer2016serotonergic}{kleinman1977comparison}
+
 \subsection{Spatial Effects}
 \subsubsection{Depth Perception Distortion}
 
-\autocite{fischer1970psilocybin}
+\autocites{fischer1970psilocybin}{dittrich1998standardized}{hill1969effects}{hill1973induction}
 
-\subsubsection{Waviness or "Breathing" of Objects}
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        {
+            \def\constepsilon{0.001}
+            \def\constymin{-13}
+            \def\constymax{7}
+            \def\constm{4}
+            \def\consta{1.5}
+            \def\fnf(#1){(ln(#1) / ln(\consta))}
+            \def\fnfinv(#1){((\consta)^(#1))}
+            \def\fnoctave(#1){(floor(\fnf(#1)))}
+            \def\fnl(#1){(2 * \fnoctave(#1) - \fnf(#1) - \constm + 2)}
+
+            \begin{tikzpicture}
+                \begin{axis}[
+                    xlabel={Distance from \ac{HMD}},
+                    ylabel={Active Octave Indices},
+                    samples=1000,
+                    grid,
+                    thick,
+                    domain=0.0000001:10,
+                    xmin=0,
+                    xmax=10,
+                    ymin=\constymin,
+                    ymax=\constymax,
+                    legend pos=outer north east,
+                    no marks,
+                    ytick = {-10, -5, 0, 5},
+                    minor y tick num=4,
+                ]
+                    \foreach \y in {\constymin, ..., \constymax}{
+                        \def\boundleft{\fpeval{\fnfinv(\y + \constepsilon)}}
+                        \def\boundright{\fpeval{\fnfinv(\y + 1 - \constepsilon)}}
+                        \edef\temp{
+                            \noexpand\fill[black!30!green, fill opacity=0.7] (\boundright, \y) -- plot[domain=\boundleft:\boundright, variable=\noexpand\x] ({\noexpand\x}, {\noexpand\fnf(\noexpand\x)}) -- (\boundright, \y);
+                            \noexpand\fill[black!30!green, fill opacity=0.7] (\boundleft, {(\y) - (\constm - 1)}) -- plot[domain=\boundleft:\boundright, variable=\noexpand\x] ({\noexpand\x}, {\noexpand\fnl(\noexpand\x)}) -- (\boundleft, {(\y) - (\constm - 1)});
+                        }
+                        % \show\temp %-- uncomment this to see what the \temp macro does
+                        \temp
+                    }
+
+                    \addplot+[draw=none, name path=fnf] {\fnf(x)};
+                    \addplot+[draw=none, name path=fnl] {\fnl(x)};
+
+                    \addplot+[draw=black, solid, jump mark mid] {\fnoctave(x) - 0};
+                    \addplot+[draw=black, solid, jump mark mid] {\fnoctave(x) - 1};
+                    \addplot+[draw=black, solid, jump mark mid] {\fnoctave(x) - 2};
+                    \addplot+[draw=black, solid, jump mark mid] {\fnoctave(x) - 3};
+                \end{axis}
+            \end{tikzpicture}
+        }
+    \fi
+    \caption{Computation of active octaves based on the distance from the \ac{HMD}. Active octaves as solid black lines. Green areas correspond to the weight of the first and last currently active octave.}\label{fig:sharpening}
+\end{figure}
+
+\subsubsection{Visual Drifting}
+
+\autocites{diaz2010sacred}{kleinman1977comparison}
+
 \subsection{Non-Spatial Effects}
 \subsubsection{Visual Acuity Enhancement}
-\subsubsection{Hue Shifting}
+
+\autocites{kluver1942mechanisms}{kluver1966mescal}{dittrich1998standardized}{diaz2010sacred}{siegel1975drug}{fischer1969effects}
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \begin{tikzpicture}[node distance = 2cm, auto]
+            \tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=1em]
+            \tikzstyle{line} = [draw, -latex']
+
+            \node [block] (verticalblur) {Vertical Gaussian Blur};
+            \node [block, below=1.25cm of verticalblur] (horizontalblur) {Horizontal Gaussian Blur};
+            \node [block, below=0.5cm of horizontalblur] (unsharpmasking) {Unsharp Masking};
+
+            \node [draw, densely dotted, minimum width=12cm, inner sep=0.5cm, fit=(verticalblur)] (pass1) {};
+            \node [draw, densely dotted, minimum width=12cm, inner sep=0.5cm, fit=(horizontalblur)(unsharpmasking)] (pass2) {};
+
+            \node [below right, text width=0.5\textwidth] at (pass1.north west) {{\scriptsize Render Pass A}};
+            \node [below right, text width=0.5\textwidth] at (pass2.north west) {{\scriptsize Render Pass B}};
+
+            \path [line] (verticalblur) -> (horizontalblur);
+            \path [line] (horizontalblur) -> (unsharpmasking);
+        \end{tikzpicture}
+    \fi
+    \caption{Execution order of distinct components of the sharpening effect.}\label{fig:sharpening}
+\end{figure}
+
 \subsubsection{Tracers}
+
+\autocites{hartman1963effect}{diaz2010sacred}{anderson1972trifluoperazine}{kleinman1977comparison}
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \tikzset{%
+          block/.style  = {draw, thick, rectangle, minimum height = 3em, minimum width = 3em},
+          op/.style     = {draw, circle, inner sep=-5mm},
+          input/.style  = {draw, circle, minimum size=2mm, inner sep=0},
+          output/.style = {input},
+        }
+
+        \begin{tikzpicture}[auto, thick, >=triangle 45]
+            \draw node at (2, 6) [coordinate] (n13) {};
+            \draw node at (4, 2) [coordinate] (n21) {};
+            \draw node at (0, 6) [input, label={\small Input Frame}] (input) {};
+            \draw node at (8, 4) [output, label={\small Modified Frame}] (output) {};
+            \draw node at (2, 4) [op, label={left:$1 - \beta^{\Delta t}$}] (n12) {\Large $\times$};
+            \draw node at (2, 2) [op] (n11) {\Large $+$};
+            \draw node at (2, 0) [op, label={left:$\beta^{\Delta t}$}] (n10) {\Large $\times$};
+            \draw node at (6, 6) [op, label={right:$1 - \alpha$}] (n33) {\Large $\times$};
+            \draw node at (6, 4) [op] (n32) {\Large $+$};
+            \draw node at (6, 2) [op, label={right:$\alpha$}] (n31) {\Large $\times$};
+            \draw node at (4, 0) [block, label={right:\small Accumulation Texture}] (accumulator) {\Large $A$};
+
+            \draw[->] (input) -- (n33);
+            \draw[->] (n13) -- (n12);
+            \draw[->] (n12) -- (n11);
+            \draw[->] (n10) -- (n11);
+            \draw[->] (accumulator) -- (n10);
+            \draw[->] (n33) -- (n32);
+            \draw[->] (n31) -- (n32);
+            \draw[->] (n11) -- (n31);
+            \draw[->] (n21) -- (accumulator);
+            \draw[->] (n32) -- (output);
+        \end{tikzpicture}
+    \fi
+    \caption{Execution graph of the tracer effect. The parameter $\alpha \in [0; 1]$ is the total opacity of the effect. The parameter $\beta \in [0; 1]$ is the feedback modifier corresponding to the ``duration'' of the resulting blur. Finally, $\Delta t$ is the time since the previous frame, making the effect less influenced by framerate fluctuations.}\label{fig:tracers-graph}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \begin{tikzpicture}[node distance = 2cm, auto]
+            \tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=1em]
+            \tikzstyle{line} = [draw, -latex']
+
+            \node [block, dashed, draw=gray, fill=none] (unsharpmasking) {Unsharp Masking};
+            \node [block, below=0.5cm of unsharpmasking] (tracers) {Tracers};
+
+            \node [draw, densely dotted, minimum width=12cm, inner sep=0.5cm, fit=(unsharpmasking)(tracers)] (pass2) {};
+
+            \node [below right, text width=0.5\textwidth] at (pass2.north west) {{\scriptsize Render Pass B (Continued)}};
+
+            \path [line] (unsharpmasking) -> (tracers);
+        \end{tikzpicture}
+    \fi
+    \caption{The tracer effect is applied in the second render pass of the sharpening effect.}\label{fig:tracers-order}
+\end{figure}
+
 \section{Complex Replication}
 \subsection{Execution Order}
 

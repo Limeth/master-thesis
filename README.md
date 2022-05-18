@@ -28,7 +28,7 @@ $ open build/main.pdf
 
 ## License
 
-The template is adapted from [Tim Baccaert's master thesis](https://github.com/timplication/master-thesis).
+The template is adapted from [Tim Baccaert's master's thesis](https://github.com/timplication/master-thesis).
 Files in `ctu/logos` are copyrighted by the Czech Technical University in Prague and details about their license can be found [here](https://cvut.cz).
 Files in `img/reused` are copyrighted by their respective owners, as documented in the [rendered document](thesis.pdf).
 The rest of the thesis is provided under the [Creative Commons Attribution 4.0 International license
