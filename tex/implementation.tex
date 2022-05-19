@@ -481,9 +481,43 @@ Regarding the last point, one might think to modulate the vertex offset by the o
 We did not expect any fast-moving objects in the scene, and so this implementation was sufficient for our application.
 
 \subsection{Non-Spatial Effects}
-\subsubsection{Visual Acuity Enhancement}
+The following replications are implemented entirely as screen-space post-processing effects, that is, applied to the 2-dimensional texture which results from rendering the 3-dimensional scene. \Ac{VR} \acp{HMD} typically make use of multiple screens for stereoscopic rendering. The post-processing effects are applied to all of the textures corresponding to each screen in the \ac{HMD}.
 
-\autocites{kluver1942mechanisms}{kluver1966mescal}{dittrich1998standardized}{diaz2010sacred}{siegel1975drug}{fischer1969effects}
+While \ac{UE4} does provide a way to create post-processing effects via ``post process materials'', these assets are limited by the design of the rendering engine and the lighting model. For example, it is not possible to define custom framebuffers for use in temporal post-processing effects.
+
+Such features require the modification of the \ac{RDG}, \ac{UE4} graph-based abstraction designed to perform whole-frame optimization of the rendering pipeline. At the same time, the documentation of this feature is very limited, with the most reliable resources being the engine's code itself, and various blog posts on the internet.
+
+Thankfully, we could make use of a boiler-plate example plugin \autocite{astral2021postprocess} that showcases interaction with the \ac{RDG}, which we modified for our purposes.
+
+\subsubsection{Visual Acuity Enhancement}
+Classical hallucinogens are known to cause alterations in the perception of elementary visual features, such as brightness, color saturation, and visual contrast
+\autocites{kluver1942mechanisms}{kluver1966mescal}{dittrich1998standardized}{diaz2010sacred}{siegel1975drug}{fischer1969effects}, as well as in the perception of detail in the textures of objects \autocite{pw2020acuity}. This may contribute to the sense of novelty typical during classical hallucinogen-induced \acp{ASC}.
+
+\subsubsubsection{Enhancement of Saturation and Contrast}
+The implementation of the enhancement of saturation and contrast is done entirely with the use of in-engine features of \ac{UE4}. \ac{UE4} makes it possible to define a global post-processing volume (a volume spanning the entirety of the scene), that applies select basic post-processing effects to the rendered views. These effects include modifiers for the saturation and contrast of the rendered views.
+
+Besides saturation and contrast, a modifier for brightness is also available, although we did not end up using it, because the dynamic range of our \ac{VR} headset (the \textit{HTC Vive} and the \textit{HTC Vive Pro}) was not sufficient to make proper use of the effect.
+
+\subsubsubsection{Enhancement of Texture Detail via Sharpening}
+In order to increase the apparent texture detail globally, we used a sharpening post-processing effect. Sharpening results in the enhancement of local contrast, or the enhancement of high-frequency information of the modified image.
+
+We decided to use the well known unsharp masking algorithm \autocite{jain1989fundamentals}, with Gaussian blur as the low-pass filter, for our implementation of the sharpening filter. A possible form of the unsharp masking expression, that we made use of, is
+
+\begin{equation}\label{eq:unsharpmask}
+    \pvec{c}' \coloneqq \vec{c} + i \cdot (\vec{c} - \vec{c}_{G(r)})
+\end{equation}
+
+where $\pvec{c}' \in [0; 1]^3$ is the resulting texel color, $\vec{c} \in [0; 1]^3$ is the original texel color, $\vec{c}_{G(r)} \in [0; 1]^3$ is the color of the texel at the same position in the source texture with a Gaussian blur of radius $r \in [0; +\infty)$ applied to it, and $i \in \mathbb{R}$ is the intensity of the effect.
+
+Since Gaussian blur is a low-pass filter, the result of $(\vec{c} - \vec{c}_{G(r)})$ is a high-pass filtered image, as it is the original without the low-frequency information.
+
+A 2-dimensional Gaussian blur may be implemented in two ways; via a 2-dimensional convolution, or, thanks to the Gaussian blur being a separable filter, using a two-pass 1-dimensional convolution. The time complexity is $\mathcal{O}(w_{kernel}^2w_{image}h_{image})$ and $\mathcal{O}(w_{kernel}w_{image}h_{image})$, respectively.
+
+We used the two-pass 1-dimensional method for its advantageous time complexity. Our implementation pre-computes one half of the symmetric convolution matrix on the CPU, according to the specified radius and the resolution of the texture. The execution order of separate steps of the algorithm is shown in figure \ref{fig:sharpening}.
+
+The resulting sharpening effect (without uniform saturation and contrast enhancement from the previous section) can be seen in figure \ref{fig:TODO}.
+
+It is noteworthy to mention one significant drawback of our approach -- the resulting effect is not perceptually uniform across the whole screen. This is caused by the fact that we see the majority of the screen under an non-perpendicular angle, and so the convolution matrix is skewed from our point of view. As an improvement for the future, one might want to consider performing the Gaussian blur on the surface of a sphere centered around the \ac{HMD}, to which the screen texture is projected.
 
 \begin{figure}[H]
     \centering

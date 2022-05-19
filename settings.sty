@@ -268,4 +268,7 @@
 \makeatother
 \AtBeginEnvironment{figure}{\DeclareRobustCommand\footnote[1]{\footnotemark\xdef\atendfigurenotes{\unexpanded\expandafter{\atendfigurenotes}\noexpand\setcounter{footnote}{\thefootnote}\noexpand\footnotetext\unexpanded{{#1}}}}}
 
+% A replacement for \vec{x}' that doesn't make the ' collide with the arrow
+\newcommand{\pvec}[1]{\vec{#1}\mkern2mu\vphantom{#1}}
+
 % \raggedbottom
