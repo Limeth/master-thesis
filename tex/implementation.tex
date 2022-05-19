@@ -143,7 +143,7 @@ The interesting property of self-similarity results in the maximum offset being 
             }
         }
     \fi
-    \caption{First attempt at distorting depth perception, unused in the final application. The function $f$ from equation \ref{eq:depth-perception-f} modifies the distance of vertices from the \ac{HMD}. Parameter $a = 1.5$.}\label{fig:depth-perception-f}
+    \caption{First attempt at distorting depth perception, unused in the final application. The function $f$ from expression \ref{eq:depth-perception-f} modifies the distance of vertices from the \ac{HMD}. Parameter $a = 1.5$.}\label{fig:depth-perception-f}
 \end{figure}
 
 Although this first iteration resulted in visually enticing results, we also noticed that it caused motion sickness in \ac{VR}, particularly during the user's movement. We believe the motion sickness was caused by clusters of geometry moving with the position of the \ac{HMD}, as if attracted to it, and caused a discrepancy between the user's vestibular system and the visual information.
@@ -175,42 +175,79 @@ Unfortunately, we have lost one important property of the previous solution: The
 
 By this modification, we have effectively changed the amplitude of the noise, yet the frequency remains the same -- and uniform. If we were to use this sample $s'$ as the distance offset, we would cause distant geometry to self-intersect. Therefore, a different solution is needed.
 
-\Ac{fBm} to the rescue! Before we go into how \ac{fBm} can help resolve this issue, let's briefly describe how it is used in noise synthesis. \ac{fBm} is a technique of combining layers of noise, while varying their amplitudes and frequencies.
+For this task, we may use \ac{fBm}. Before we go into how \ac{fBm} can help resolve this issue, let's briefly describe how it is used in the synthesis of self-similar noise. \Ac{fBm} is a technique of combining layers of noise, while varying their amplitudes and frequencies.
 
 \begin{equation}\label{eq:fbm1}
-    s' \coloneqq \sum_{i=0}^{k-1} g^i \cdot s\left(l^{i} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^i \cdot s\left(l^{i} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + i \vec{o}\right)
 \end{equation}
 
-In equation \ref{eq:fbm1}, we combine $k \in \mathbb{N}$ layers of simplex noise. The parameter $g \in \mathbb{R}$ (gain) changes the amplitude of each layer, and the parameter $l \in \mathbb{R}$ (lacunarity) changes the frequency of each layer. Typically, $l = \frac{1}{g}$; in that case, we are generating so-called ``pink noise''.
+In expression \ref{eq:fbm1}, we combine $k \in \mathbb{N}$ layers of simplex noise. The parameter $g \in \mathbb{R}$ (gain) changes the amplitude of each layer, and the parameter $l \in \mathbb{R}$ (lacunarity) changes the frequency of each layer. Typically, $l = \frac{1}{g}$; in that case, we are generating so-called ``pink noise''. The parameter $\vec{o} \in \mathbb{R}^n$ is a coordinate offset applied to each layer, to break up symmetry (a different seed for each layer could also be used).
 
-Now, back to our original problem of keeping the amplitude proportional to the distance from the \ac{HMD}. Instead of using $k$ layers of noise with indices $i = 0, 1, \dots, k - 1$, we can offset the indices by an integer value depending on the distance from the \ac{HMD}. If we do so carefully, we will recover the direct proportionality.
+Now, back to our original problem of keeping the amplitude proportional to the distance from the \ac{HMD}. Instead of using $k$ layers of noise with indices $i = 0, 1, \dots, k - 1$, we can offset the indices by an integer value depending on the distance from the \ac{HMD}. If we do so carefully, we will recover the direct proportionality. We define a real-valued offset $m \colon \mathbb{R} \to \mathbb{R}$:
 
+\begin{equation}
+    m(r) = \log_a r
+\end{equation}
+
+Where $a \in \mathbb{R}$ is a parameter; more on this later. Then, we can define the rounded-down integer part $j \colon \mathbb{R} \to \mathbb{Z}$ to offset the layer indices with:
+
+\begin{equation}
+    j(r) = \lfloor m(r) \rfloor
+\end{equation}
 \begin{equation}\label{eq:fbm2}
-    s' \coloneqq \sum_{i=0}^{k-1} g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
 \end{equation}
 
-Equation \ref{eq:fbm2} differs from equation \ref{eq:fbm1} in that we have added an index offset $j(r)$, which is computed from the distance to the \ac{HMD}. We will define this function shortly, but for now, it suffices to know that it is a non-decreasing function. Now we are able to offset the indices. However, this will result in noticeable discontinuities of the noise at the discontinuities of $j(r)$.
+Expression \ref{eq:fbm2} differs from expression \ref{eq:fbm1} in that we have added an index offset $j(r)$, which is computed from the distance to the \ac{HMD} $r$. Now we are able to offset the indices. However, this will result in noticeable discontinuities of the noise at the discontinuities of $j(r)$.
 
 In order to remove these discontinuities, we shall introduce blending. Let us refer to the layers at indices $j(r), j(r) + 1, \dots, j(r) + k - 1$ as ``active layers'', the layer at index $j(r)$ as ``the first active layer'' and the layer at index $j(r) + k - 1$ as ``the last active layer''.
 
-\begin{equation}\label{eq:fbm3}
-    s' \coloneqq \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
-\end{equation}
-
-We have added a weight function $w \colon \mathbb{Z} \times \mathbb{R} \to [0; 1]$, which will attenuate the first and last active layer, while leaving other layers unaffected. Notice a subtle change -- we have also changed the upper index of the sum from $k - 1$ to $k$, to account for the attenuation.
-
-Let us define $w$ as:
+Let us define a weight function $w \colon \mathbb{Z} \times \mathbb{R} \to [0; 1]$, which will attenuate the first and last active layer, while leaving other layers unaffected.
 
 \begin{equation}
     w(i, r) =
     \begin{cases}
-        m(r) - j(r) & \text{if } i = 0 \\
-        1 - (m(r) - j(r)) & \text{if } i = k \\
+        m(r) - j(r) = \{m(r)\} & \text{if } i = 0 \\
+        1 - (m(r) - j(r)) = 1 - \{m(r)\} & \text{if } i = k \\
         1 & \text{otherwise}
     \end{cases}
 \end{equation}
 
+Where $\{ x \} = x - \lfloor x \rfloor$ is the upper fractional part of $x$.
 
+\begin{equation}\label{eq:fbm3}
+    \boxed{
+        s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+    }
+\end{equation}
+
+Besides multiplying each layer by the weight $w(i, r)$, we have also changed the upper index of the sum from $k - 1$ to $k$, to account for the attenuation.
+
+We have arrived at the derived general expression for blended \ac{fBm} noise based on distance $r$ with parameters $a, g, l \in \mathbb{R}; \vec{o} \in \mathbb{R}^n; k \in \mathbb{N}$. However, in general, this form does not satisfy our requirement of the amplitude being proportional to the distance $r$. In order for that to be true, we must set $a = g = \frac{1}{l}$.
+
+The expression then expands to:
+
+\begin{equation}\label{eq:fbm4}
+    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\left(a^{-(i + \lfloor \log_a r \rfloor)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+\end{equation}
+\begin{equation}
+    w(i, r) =
+    \begin{cases}
+        \{\log_a r\} & \text{if } i = 0 \\
+        1 - \{\log_a r\} & \text{if } i = k \\
+        1 & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+Finally, we may or may not want the frequency of the fourth coordinate to be influenced by lacunarity. We reached better results when lacunarity did not affect the time coordinate.
+
+\begin{equation}\label{eq:fbm4}
+    \boxed{
+        s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\left(\begin{bmatrix}a^{-(i + \lfloor \log_a r \rfloor)}f_sx\\a^{-(i + \lfloor \log_a r \rfloor)}f_sy\\a^{-(i + \lfloor \log_a r \rfloor)}f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+    }
+\end{equation}
+
+This is the final expression used to sample blended \ac{fBm} noise based on the distance $r$ with parameters $a \in \mathbb{R}, \vec{o} \in \mathbb{R}^n, k \in \mathbb{N}$. This expression is used in the application to displace vertices of scene geometry.
 
 \begin{figure}[H]
     \centering
@@ -309,7 +346,7 @@ Let us define $w$ as:
             \end{tikzpicture}
         }
     \fi
-    \caption{Amplitudes of active octaves based on the distance from the \ac{HMD}. Active octaves as solid black lines. The green line shows the direct proportionality of the maximum active octave amplitude and the distance from the \ac{HMD}.}\label{fig:noise-amplitudes}
+    \caption{Amplitudes of active octaves based on the distance from the \ac{HMD}, for the case where $a = g = 1.5$. Active octaves as solid black lines. The green line shows the direct proportionality of the maximum active octave amplitude and the distance from the \ac{HMD}.}\label{fig:noise-amplitudes}
 \end{figure}
 
 \subsubsection{Visual Drifting}
