@@ -60,7 +60,7 @@ The final scene contains a flat patch of grass and other low foliage the size of
     \caption{A preview of the resulting scene.}\label{fig:scene-preview}
 \end{figure}
 
-\section{Implementation of Replications}
+\section{Implementation of Replications}\ref{sec:implementation}
 The following replications are modelled after surveys of the phenomenology of psychedelic states \autocites{preller2016phenomenology}{kometer2016serotonergic} and personal reports \autocite{kleinman1977comparison}.
 
 \subsection{Spatial Effects}
@@ -633,7 +633,30 @@ Finally, regarding discontinuous tracers, the implementation of such an effect w
 \end{figure}
 
 \section{Complex Replication}
+The complex replication, which is supposed to simulate a significant portion of an \ac{ASC} induced by classical psychedelics, is the combination of the partial replications described in section \ref{sec:implementation}.
+
 \subsection{Execution Order}
+The task of combining partial replications raises the question, in which order they should be arranged. First, we must acknowledge, that there are requirements on the order of the replications, based on their position in the rendering pipeline of \ac{UE4}. For example, spatial effects affecting the position of vertices of the scene geometry are a part of the vertex shader, and therefore precede non-spatial, post-processing effects. At the same time, we cannot influence the order of the \textit{saturation and contrast enhancement}, as it uses the engine's built-in post-processing pass. Thankfully, the order of this particular effect among other post-processing effects would have no influence on the resulting image anyway. Thus, we are left with the following decisions on the relative order of the following replications.
+
+We have two possible orderings for the spatial effects.
+
+\begin{enumerate}
+    \item Depth Perception Distortion $\to$ Visual Drifting
+    \item Visual Drifting $\to$ Depth Perception Distortion
+\end{enumerate}
+
+We certainly do not want the \textit{visual drifting} to be applied after the \textit{depth perception distortion}, as that would mean the sampling coordinates of vertices of static geometry would change and have a significantly visible impact on the resulting effect. Therefore, we chose option 2.
+
+Next, we need to consider the ordering of the remaining two non-spatial, post-processing effects.
+
+\begin{enumerate}
+    \item Enhancement of Texture Detail via Sharpening $\to$ Tracers
+    \item Tracers $\to$ Enhancement of Texture Detail via Sharpening
+\end{enumerate}
+
+We do not want the tracers to be sharpened, as the goal of sharpening was to enhance the detail of textures. Additionally, sharpening the tracers might reveal the discrete implementation of the color accumulation into the accumulation buffer, which may become visible particularly for moving objects, or during the movement of the \ac{HMD}. Therefore, we chose option 1.
+
+The complete order of all of the effects, as implemented in our application, is shown in figure \ref{fig:execution-order}.
 
 \begin{figure}[H]
     \centering
@@ -662,7 +685,31 @@ Finally, regarding discontinuous tracers, the implementation of such an effect w
             \path [line] (tracers) -> (contrast);
         \end{tikzpicture}
     \fi
-    \caption{The execution order of partial replications, making up the complex replication.}\label{fig:scene-preview}
+    \caption{The execution order of partial replications, making up the complex replication.}\label{fig:execution-order}
 \end{figure}
 
-\subsection{Experiment Automation}\label{sec:experiment_automation}
+\subsection{Experiment Automation and Controls}\label{sec:experiment_automation}
+In order to make the application behave in a reproducible way, for testing, we had to automate it. Our study, as discussed in chapter \ref{sec:evaluation}, required an active scenario and a control scenario. The only difference between these scenarios is the influence of the overall complex replication.
+
+For the control scenario, the complex replication is completely disabled, for the whole duration of the test. In respect for the participants of our study, we wanted to keep the tests short mainly because of the control scenario, where the participants would have to keep the \ac{HMD} on, while nothing interesting was happening in the application. Each scenario was therefore decided to last 10 minutes.
+
+For the active scenario, the influence of the complex replication is controlled via a \textit{master influence} variable, the value of which is changed throughout the test, according to a function loosely modelled after the stages of a psychedelic experience from figure \ref{fig:temporal-dynamics}, or the typical plasma concentration-time profile of the psychedelic. We modified the function, so that the drop-off is not as steep and lasts longer, otherwise the user would not be able to experience the effects at a high influence for enough time, since the ``peak'' lasts only about 1-2 minutes. The resulting function of the \textit{master influence} variable is shown in figure \ref{fig:master-influence}.
+
+We also added informational messages to indicate the beginning and end of the test, displayed in front of the participant in the virtual scene.
+
+Each scenario can be launched with a key combination:
+
+\begin{itemize}
+    \item \textbf{Control:} Shift-C
+    \item \textbf{Active:} Shift-T
+\end{itemize}
+
+This way, the administrator can launch the appropriate scenario and focus their attention on keeping the participant safe from, e.g., tripping over the \ac{HMD}'s cable or hitting a wall.
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        % \includegraphics[width=0.95\textwidth]{img/cannon.png}
+    \fi
+    \caption{TODO}\label{fig:master-influence}
+\end{figure}
