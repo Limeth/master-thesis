@@ -143,7 +143,7 @@ The interesting property of self-similarity results in the maximum offset being 
             }
         }
     \fi
-    \caption{First attempt at distorting depth perception, unused in the final application. The function $f$ from expression \ref{eq:depth-perception-f} modifies the distance of vertices from the \ac{HMD}. Parameter $a = 1.5$.}\label{fig:depth-perception-f}
+    \caption{First attempt at distorting depth perception, unused in the final application. The function $f$ from equation \ref{eq:depth-perception-f} modifies the distance of vertices from the \ac{HMD}. Parameter $a = 1.5$.}\label{fig:depth-perception-f}
 \end{figure}
 
 Although this first iteration resulted in visually enticing results, we also noticed that it caused motion sickness in \ac{VR}, particularly during the user's movement. We believe the motion sickness was caused by clusters of geometry moving with the position of the \ac{HMD}, as if attracted to it, and caused a discrepancy between the user's vestibular system and the visual information.
@@ -159,7 +159,7 @@ Let's denote the simplex noise sampling function as $s \colon \mathbb{R}^n \to \
 
 Now that we have a way to sample the noise, we could try to use the noise sample (possibly scaled by a constant) as the offset of the distance of each vertex to the \ac{HMD}, as shown in the previous section. To retrieve the sample, we can use:
 
-\begin{equation}
+\begin{equation}\label{eq:simplex}
     s' \coloneqq s\left(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
 \end{equation}
 
@@ -181,7 +181,7 @@ For this task, we may use \ac{fBm}. Before we go into how \ac{fBm} can help reso
     s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^i \cdot s\left(l^{i} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + i \vec{o}\right)
 \end{equation}
 
-In expression \ref{eq:fbm1}, we combine $k \in \mathbb{N}$ layers of simplex noise. The parameter $g \in \mathbb{R}$ (gain) changes the amplitude of each layer, and the parameter $l \in \mathbb{R}$ (lacunarity) changes the frequency of each layer. Typically, $l = \frac{1}{g}$; in that case, we are generating so-called ``pink noise''. The parameter $\vec{o} \in \mathbb{R}^n$ is a coordinate offset applied to each layer, to break up symmetry (a different seed for each layer could also be used).
+In equation \ref{eq:fbm1}, we combine $k \in \mathbb{N}$ layers of simplex noise. The parameter $g \in \mathbb{R}$ (gain) changes the amplitude of each layer, and the parameter $l \in \mathbb{R}$ (lacunarity) changes the frequency of each layer. Typically, $l = \frac{1}{g}$; in that case, we are generating so-called ``pink noise''. The parameter $\vec{o} \in \mathbb{R}^n$ is a coordinate offset applied to each layer, to break up symmetry (a different seed for each layer could also be used).
 
 Now, back to our original problem of keeping the amplitude proportional to the distance from the \ac{HMD}. Instead of using $k$ layers of noise with indices $i = 0, 1, \dots, k - 1$, we can offset the indices by an integer value depending on the distance from the \ac{HMD}. If we do so carefully, we will recover the direct proportionality. We define a real-valued offset $m \colon \mathbb{R} \to \mathbb{R}$:
 
@@ -198,7 +198,36 @@ Where $a \in \mathbb{R}$ is a parameter; more on this later. Then, we can define
     s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
 \end{equation}
 
-Expression \ref{eq:fbm2} differs from expression \ref{eq:fbm1} in that we have added an index offset $j(r)$, which is computed from the distance to the \ac{HMD} $r$. Now we are able to offset the indices. However, this will result in noticeable discontinuities of the noise at the discontinuities of $j(r)$.
+\begin{figure}[ht]
+    \subfloat[\centering Simplex noise from eq. \ref{eq:simplex}.]{%
+        \ifgraphics
+            \includegraphics[width=.48\linewidth]{img/noise-simplex.png}%
+        \fi
+        \label{subfig:a}%
+    }\hfill
+    \subfloat[\centering Simplex noise \ac{fBm} from eq. \ref{eq:fbm1}, with coordinate offset $\vec{o} = \vec{0}$ and parameters $g = \frac{1}{l} = 1.5, k = 5$.]{%
+        \ifgraphics
+            \includegraphics[width=.48\linewidth]{img/noise-fbm-coordinate-nooffset.png}%
+        \fi
+        \label{subfig:b}%
+    }\\
+    \subfloat[\centering Simplex noise \ac{fBm} from eq. \ref{eq:fbm1}, with non-zero coordinate offset $\vec{o} \ne \vec{0}$ and parameters $g = \frac{1}{l} = 1.5, k = 5$.]{%
+        \ifgraphics
+            \includegraphics[width=.48\linewidth]{img/noise-fbm-coordinate-offset.png}%
+        \fi
+        \label{subfig:c}%
+    }\hfill
+    \subfloat[\centering Simplex noise \ac{fBm} with index offsets based on the distance to the center $r$, from eq. \ref{eq:fbm2}, with non-zero coordinate offset $\vec{o} \ne \vec{0}$ and parameters $a = g = \frac{1}{l} = 1.5, k = 5$.]{%
+        \ifgraphics
+            \includegraphics[width=.48\linewidth]{img/noise-octave-offset-integer.png}%
+        \fi
+        \label{subfig:d}%
+    }
+    \caption{Intermediate steps in the construction of the blended \ac{fBm} noise. Amplitude adjusted for visualization.}
+    \label{fig:noise-demo-intermediate}
+\end{figure}
+
+Equation \ref{eq:fbm2} differs from equation \ref{eq:fbm1} in that we have added an index offset $j(r)$, which is computed from the distance to the \ac{HMD} $r$. Now we are able to offset the indices. However, this will result in noticeable discontinuities of the noise at the discontinuities of $j(r)$.
 
 In order to remove these discontinuities, we shall introduce blending. Let us refer to the layers at indices $j(r), j(r) + 1, \dots, j(r) + k - 1$ as ``active layers'', the layer at index $j(r)$ as ``the first active layer'' and the layer at index $j(r) + k - 1$ as ``the last active layer''.
 
@@ -223,9 +252,18 @@ Where $\{ x \} = x - \lfloor x \rfloor$ is the upper fractional part of $x$.
 
 Besides multiplying each layer by the weight $w(i, r)$, we have also changed the upper index of the sum from $k - 1$ to $k$, to account for the attenuation.
 
-We have arrived at the derived general expression for blended \ac{fBm} noise based on distance $r$ with parameters $a, g, l \in \mathbb{R}; \vec{o} \in \mathbb{R}^n; k \in \mathbb{N}$. However, in general, this form does not satisfy our requirement of the amplitude being proportional to the distance $r$. In order for that to be true, we must set $a = g = \frac{1}{l}$.
+We have arrived at the derived general equation for blended \ac{fBm} noise based on distance $r$ with parameters $a, g, l \in \mathbb{R}; \vec{o} \in \mathbb{R}^n; k \in \mathbb{N}$. However, in general, this form does not satisfy our requirement of the amplitude being proportional to the distance $r$. In order for that to be true, we must set $a = g = \frac{1}{l}$.
 
-The expression then expands to:
+\begin{figure}[ht]
+    \centering
+    \ifgraphics
+        \includegraphics[width=\linewidth]{img/noise-final.png}%
+    \fi
+    \caption{The final implementation of the blended \ac{fBm} Simplex noise based on the distance to the center $r$, from eq. \ref{eq:fbm5}, with non-zero coordinate offset $\vec{o} \ne \vec{0}$ and parameters $a = g = \frac{1}{l} = 1.5, k = 5$. Amplitude adjusted for visualization.}
+    \label{fig:noise-demo-final}
+\end{figure}
+
+The equation then expands to:
 
 \begin{equation}\label{eq:fbm4}
     s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\left(a^{-(i + \lfloor \log_a r \rfloor)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
@@ -241,13 +279,13 @@ The expression then expands to:
 
 Finally, we may or may not want the frequency of the fourth coordinate to be influenced by lacunarity. We reached better results when lacunarity did not affect the time coordinate.
 
-\begin{equation}\label{eq:fbm4}
+\begin{equation}\label{eq:fbm5}
     \boxed{
         s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\left(\begin{bmatrix}a^{-(i + \lfloor \log_a r \rfloor)}f_sx\\a^{-(i + \lfloor \log_a r \rfloor)}f_sy\\a^{-(i + \lfloor \log_a r \rfloor)}f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
     }
 \end{equation}
 
-This is the final expression used to sample blended \ac{fBm} noise based on the distance $r$ with parameters $a \in \mathbb{R}, \vec{o} \in \mathbb{R}^n, k \in \mathbb{N}$. This expression is used in the application to displace vertices of scene geometry.
+This is the final equation used to sample blended \ac{fBm} noise based on the distance $r$ with parameters $a \in \mathbb{R}, \vec{o} \in \mathbb{R}^n, k \in \mathbb{N}$. This equation is used in the application to displace vertices of scene geometry. The result is scaled to ensure that no self-intersections of scene geometry occur.
 
 \begin{figure}[H]
     \centering
@@ -266,7 +304,7 @@ This is the final expression used to sample blended \ac{fBm} noise based on the 
             \begin{tikzpicture}
                 \begin{axis}[
                     xlabel={Distance from \ac{HMD}},
-                    ylabel={Active Octave Indices},
+                    ylabel={Active Layer Indices},
                     samples=1000,
                     grid,
                     thick,
@@ -303,7 +341,7 @@ This is the final expression used to sample blended \ac{fBm} noise based on the 
             \end{tikzpicture}
         }
     \fi
-    \caption{Computation of active octaves based on the distance from the \ac{HMD}. Active octaves as solid black lines. Green areas correspond to the weight of the first and last currently active octave.}\label{fig:noise-octaves}
+    \caption{Computation of active layers based on the distance from the \ac{HMD}. Active layers as solid black lines. Green areas correspond to the weight of the first and last currently active layer.}\label{fig:noise-octaves}
 \end{figure}
 
 \begin{figure}[H]
@@ -322,7 +360,7 @@ This is the final expression used to sample blended \ac{fBm} noise based on the 
             \begin{tikzpicture}
                 \begin{axis}[
                     xlabel={Distance from \ac{HMD}},
-                    ylabel={Active Octave Amplitudes},
+                    ylabel={Active Layer Amplitudes},
                     samples=1000,
                     grid,
                     thick,
@@ -346,7 +384,7 @@ This is the final expression used to sample blended \ac{fBm} noise based on the 
             \end{tikzpicture}
         }
     \fi
-    \caption{Amplitudes of active octaves based on the distance from the \ac{HMD}, for the case where $a = g = 1.5$. Active octaves as solid black lines. The green line shows the direct proportionality of the maximum active octave amplitude and the distance from the \ac{HMD}.}\label{fig:noise-amplitudes}
+    \caption{Amplitudes of active layers based on the distance from the \ac{HMD}, for the case where $a = g = 1.5$. Active layers as solid black lines. The green line shows the direct proportionality of the maximum active layer amplitude and the distance from the \ac{HMD}.}\label{fig:noise-amplitudes}
 \end{figure}
 
 \subsubsection{Visual Drifting}
