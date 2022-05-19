@@ -545,7 +545,34 @@ It is noteworthy to mention one significant drawback of our approach -- the resu
 
 \subsubsection{Tracers}
 
-\autocites{hartman1963effect}{diaz2010sacred}{anderson1972trifluoperazine}{kleinman1977comparison}
+``Tracers'' is the colloquial name for visual tracing, the last aspect of psyechedelic-induced \acp{ASC} we implemented a replication of in our application. Tracers are shown as positive after-images of moving objects, and can appear either continuous or discontinuous \autocites{hartman1963effect}{diaz2010sacred}{anderson1972trifluoperazine}{kleinman1977comparison}. We focused on the replication of the continuous form of tracers.
+
+The implementation required the persistence of image data between frames, which has been accomplished by the usage of an accumulation texture, one for each screen of the \ac{HMD}. The replication has been implemented via the following post-processing operation:
+
+\begin{align}
+    \pvec{c}' &\coloneqq \operatorname{lerp}(\vec{c}, \vec{a}, \beta^{\Delta t} \cdot \alpha) \\
+    \pvec{a}' &\coloneqq \operatorname{lerp}(\vec{c}, \vec{a}, \beta^{\Delta t})
+\end{align}
+where
+\begin{equation}
+    \operatorname{lerp}(x, y, t) = (1 - t)x + ty
+\end{equation}
+
+is the the linear interpolation function, also known as \texttt{mix} in \ac{GLSL} and \texttt{lerp} in \ac{HLSL}, $\vec{c} \in [0; 1]^3$ is the original color of the texel from the source texture, $\pvec{c}' \in [0; 1]^3$ is the modified color of the texel stored in the output texture, $\vec{a} \in [0; 1]^3$ is the original color of the texel from the accumulation texture, $\pvec{a}' \in [0; 1]^3$ is the modified color of the texel stored in the accumulation texture, $\Delta t \in [0; +\infty)$ is the duration since the previous frame, and $\alpha, \beta \in [0; 1]$ are parameters.
+
+Another visualization of the operation is shown as an execution graph in figure \ref{fig:tracers-graph}.
+
+The parameter $\alpha$ corresponds to the overall opacity of the effect, which is fine-tuned, so that the effect does not cause motion sickness by dominating the visual field. The parameter $\beta$ controls the feedback strength, which can be understood as a parameter that influences the duration of the temporal blur or ``exposition time''. The $\Delta t$ parameter provides resiliency to framerate fluctuations.
+
+This is the final form of the effect that has been used in our application.
+
+Nevertheless, the current form of the implementation has some drawbacks, that we have identified late in the development of the application.
+
+First, we have received feedback, that the tracers should not be as noticeable during the movement or rotation of the \ac{HMD}, compared to moving objects in the scene. Despite that, we decided to keep our implementation, because we find it unlikely, that the psychedelic-induced \ac{ASC} would somehow change the perception of objects moving relative to some kind of absolute world frame \textit{only}, rather than of any object that has been moved within the person's field of view.
+
+And second, our implementation completely ignores the direction the user is looking, it only considers the rotation of the \ac{HMD}. A precise eye-tracking device built-into the \ac{HMD} would be required to develop a method that takes the the direction of eyes into account.
+
+Finally, regarding discontinuous tracers, the implementation of such an effect would require keeping more temporal information than just a single accumulation texture. Probably, a 3-dimensional texture would have to be used, with the width and height of the screen and the depth of $\frac{1}{\Delta t} \cdot T$, where $\frac{1}{\Delta t}$ is the framerate, and $T \in (0; +\infty)$ is the delay of the first positive after-image of the tracers. One challenge may stem from the fact that the framerate of a \ac{VR} application is typically not uniform.
 
 \begin{figure}[H]
     \centering
@@ -582,7 +609,7 @@ It is noteworthy to mention one significant drawback of our approach -- the resu
             \draw[->] (n32) -- (output);
         \end{tikzpicture}
     \fi
-    \caption{Execution graph of the tracer effect. The parameter $\alpha \in [0; 1]$ is the total opacity of the effect. The parameter $\beta \in [0; 1]$ is the feedback modifier corresponding to the ``duration'' of the resulting blur. Finally, $\Delta t$ is the time since the previous frame, making the effect less influenced by framerate fluctuations.}\label{fig:tracers-graph}
+    \caption{Execution graph of the tracer effect. The parameter $\alpha \in [0; 1]$ is the total opacity of the effect. The parameter $\beta \in [0; 1]$ is the feedback modifier corresponding to the ``duration'' of the resulting blur. Finally, $\Delta t \in [0; +\infty)$ is the time since the previous frame, making the effect less influenced by framerate fluctuations. The accumulation texture is first read from, then written to.}\label{fig:tracers-graph}
 \end{figure}
 
 \begin{figure}[H]
