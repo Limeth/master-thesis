@@ -72,6 +72,7 @@
 \usepackage[labelfont=bf]{caption}
 
 % PACKAGES
+\usepackage{mleftright}
 \usepackage{pdfpages}
 \usepackage{graphicx}
 \usepackage{subfig}
@@ -266,3 +267,5 @@
 \AfterEndEnvironment{figure}{\atendfigurenotes\let\atendfigurenotes\@empty}%
 \makeatother
 \AtBeginEnvironment{figure}{\DeclareRobustCommand\footnote[1]{\footnotemark\xdef\atendfigurenotes{\unexpanded\expandafter{\atendfigurenotes}\noexpand\setcounter{footnote}{\thefootnote}\noexpand\footnotetext\unexpanded{{#1}}}}}
+
+% \raggedbottom

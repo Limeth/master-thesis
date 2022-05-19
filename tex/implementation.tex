@@ -71,6 +71,8 @@ However unwieldy, it is possible to use \ac{HLSL} code in material graphs, in \a
 \subsubsection{Depth Perception Distortion}
 This replication simulates the distorted perception of depth, micropsia, and macropsia \autocites{fischer1970psilocybin}{dittrich1998standardized}{hill1969effects}{hill1973induction}.
 
+Our replication of the depth perception distortion is implemented as a world-space vertex shader. Even though certain distortions in screen-space may also result in the distortion of depth perception, we chose our approach to achieve better control over the shape of the rendered geometry.
+
 \subsubsubsection{First Attempt}
 Our first attempt made use of a self-similar, bijective and continuous function $f$ to modify the distance of vertices from the \ac{HMD}. The self-similarity is required to ensure that no self-intersection of geometry occurs, after the offset has been applied.
 
@@ -150,7 +152,7 @@ Although this first iteration resulted in visually enticing results, we also not
 
 Another disadvantage of this solution is its predictability and the synthetic look caused by its uniformity.
 
-\subsubsubsection{Final Solution}
+\subsubsubsection{Final Solution}\label{sec:noise}
 In order to break up clusters of similarly affected geometry, we decided to use procedural noise. Procedural noise has been used for the generation of textures \autocite{perlin1985image}, and would be suitable to create a less predictable, more chaotic effect.
 
 There are various kinds of procedural noise used in computer graphics. We found Simplex noise \autocite{olano2002simplex} to be suitable for our use-case, particularly for its $\mathcal{O}(n^2)$ time complexity in $n$ dimensions, lack of directional artifacts (visual isotropy), and a well-defined continuous gradient.
@@ -160,7 +162,7 @@ Let's denote the simplex noise sampling function as $s \colon \mathbb{R}^n \to \
 Now that we have a way to sample the noise, we could try to use the noise sample (possibly scaled by a constant) as the offset of the distance of each vertex to the \ac{HMD}, as shown in the previous section. To retrieve the sample, we can use:
 
 \begin{equation}\label{eq:simplex}
-    s' \coloneqq s\left(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+    s' \coloneqq s\mleft(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\mright)
 \end{equation}
 
 where $s'$ is the resulting sample, $x$, $y$ and $z$ are spacial coordinates of any point in space (typically the position of a vertex), $t$ is the current time in seconds, and $f_s$ and $f_t$ are space-wise and time-wise frequencies of the noise, respectively.
@@ -170,7 +172,7 @@ With the addition of the time coordinate, resulting in 4-dimensional noise, the 
 Unfortunately, we have lost one important property of the previous solution: The fact that the maximum offset was directly proportional to the distance from the \ac{HMD}. We could try to reintroduce proportionality naively by multiplying the sample by the distance $r$:
 
 \begin{equation}
-    s' \coloneqq r \cdot s\left(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\right)
+    s' \coloneqq r \cdot s\mleft(\begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix}\mright)
 \end{equation}
 
 By this modification, we have effectively changed the amplitude of the noise, yet the frequency remains the same -- and uniform. If we were to use this sample $s'$ as the distance offset, we would cause distant geometry to self-intersect. Therefore, a different solution is needed.
@@ -178,7 +180,7 @@ By this modification, we have effectively changed the amplitude of the noise, ye
 For this task, we may use \ac{fBm}. Before we go into how \ac{fBm} can help resolve this issue, let's briefly describe how it is used in the synthesis of self-similar noise. \Ac{fBm} is a technique of combining layers of noise, while varying their amplitudes and frequencies.
 
 \begin{equation}\label{eq:fbm1}
-    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^i \cdot s\left(l^{i} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + i \vec{o}\right)
+    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^i \cdot s\mleft(l^{i} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + i \vec{o}\mright)
 \end{equation}
 
 In equation \ref{eq:fbm1}, we combine $k \in \mathbb{N}$ layers of simplex noise. The parameter $g \in \mathbb{R}$ (gain) changes the amplitude of each layer, and the parameter $l \in \mathbb{R}$ (lacunarity) changes the frequency of each layer. Typically, $l = \frac{1}{g}$; in that case, we are generating so-called ``pink noise''. The parameter $\vec{o} \in \mathbb{R}^n$ is a coordinate offset applied to each layer, to break up symmetry (a different seed for each layer could also be used).
@@ -195,7 +197,7 @@ Where $a \in \mathbb{R}$ is a parameter; more on this later. Then, we can define
     j(r) = \lfloor m(r) \rfloor
 \end{equation}
 \begin{equation}\label{eq:fbm2}
-    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k-1} g^{i+j(r)} \cdot s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright)
 \end{equation}
 
 \begin{figure}[ht]
@@ -223,7 +225,7 @@ Where $a \in \mathbb{R}$ is a parameter; more on this later. Then, we can define
         \fi
         \label{subfig:d}%
     }
-    \caption{Intermediate steps in the construction of the blended \ac{fBm} noise. Amplitude adjusted for visualization.}
+    \caption{Intermediate steps in the construction of the blended \ac{fBm} noise. Amplitude adjusted for visualization and clipped to range.}
     \label{fig:noise-demo-intermediate}
 \end{figure}
 
@@ -246,7 +248,7 @@ Where $\{ x \} = x - \lfloor x \rfloor$ is the upper fractional part of $x$.
 
 \begin{equation}\label{eq:fbm3}
     \boxed{
-        s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\left(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+        s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright)
     }
 \end{equation}
 
@@ -266,7 +268,7 @@ We have arrived at the derived general equation for blended \ac{fBm} noise based
 The equation then expands to:
 
 \begin{equation}\label{eq:fbm4}
-    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\left(a^{-(i + \lfloor \log_a r \rfloor)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+    s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\mleft(a^{-(i + \lfloor \log_a r \rfloor)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + \lfloor \log_a r \rfloor) \vec{o}\mright)
 \end{equation}
 \begin{equation}
     w(i, r) =
@@ -281,7 +283,7 @@ Finally, we may or may not want the frequency of the fourth coordinate to be inf
 
 \begin{equation}\label{eq:fbm5}
     \boxed{
-        s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\left(\begin{bmatrix}a^{-(i + \lfloor \log_a r \rfloor)}f_sx\\a^{-(i + \lfloor \log_a r \rfloor)}f_sy\\a^{-(i + \lfloor \log_a r \rfloor)}f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\right)
+        s' \coloneqq \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot a^{i + \lfloor \log_a r \rfloor} \cdot s\mleft(\begin{bmatrix}a^{-(i + \lfloor \log_a r \rfloor)}f_sx\\a^{-(i + \lfloor \log_a r \rfloor)}f_sy\\a^{-(i + \lfloor \log_a r \rfloor)}f_sz\\f_tt\end{bmatrix} + (i + \lfloor \log_a r \rfloor) \vec{o}\mright)
     }
 \end{equation}
 
@@ -389,7 +391,94 @@ This is the final equation used to sample blended \ac{fBm} noise based on the di
 
 \subsubsection{Visual Drifting}
 
-\autocites{diaz2010sacred}{kleinman1977comparison}
+In this section, we describe the implementation of our replication of visual drifting, sometimes described as the ``breathing'' or ``morphing'' of objects \autocites{diaz2010sacred}{kleinman1977comparison}.
+
+As with depth perception distortion, there are two ways of implementing this replication, depending on the coordinate system and stage of rendering affected -- world-space and screen-space.
+
+Ideally, the realism of the final implementation should not be broken by:
+
+\begin{enumerate}
+    \item the rotation of the \ac{HMD};
+    \item the movement of the \ac{HMD} up to regular walking speed;
+    \item the fast movement of objects in the scene.
+\end{enumerate}
+
+We chose to avoid a screen-space implementation, because satisfying any of those requirements seemed very difficult. Nevertheless, we are confident that our world-space solution satisfies at least the first two of the requirements.
+
+We can use procedural noise to offset vertices into arbitrary directions in 3 dimensional space, but we need to be careful so that we do not cause geometry to self-intersect. Thankfully, we have already solved this problem in the previous section, and we can use that noise function.
+
+Let us consider the general equation \ref{eq:fbm3} with $a = g = \frac{1}{l}$, and denote the right-hand side expression as a vector field $S \colon \mathbb{R}^n \to \mathbb{R}$, where $n = 4$:
+
+\begin{equation}
+    S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright) = \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright)
+\end{equation}
+
+Then, we have two ways of using this noise function to generate an offset vector $\vec{v} \in \mathbb{R}^3$.
+
+\textbf{Option one.}\\We compose the offset vector $\vec{v}$ from three samples of $S$ with coordinate offset vectors $\vec{o}_{0}, \vec{o}_{1}, \vec{o}_{2} \in \mathbb{R}^4$ to ensure different samples (different seeds would also work).
+
+\begin{equation}
+    \vec{v} \coloneqq \mleft[ S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix} + \vec{o}_0\mright) \enspace S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix} + \vec{o}_1\mright) \enspace S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix} + \vec{o}_2\mright) \mright]^T
+\end{equation}
+
+\textbf{Option two.}\\We use the first 3 components of the gradient of $S$ as the offset vector $\vec{v}$.
+
+\begin{equation}
+    \vec{v} \coloneqq \begin{bmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\end{bmatrix} \nabla S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright)
+\end{equation}
+
+\begin{figure}[htb]
+    \centering
+    \ifgraphics
+        \includegraphics[width=\linewidth]{img/noise-grad-original.png}%
+    \fi
+    \caption{The first 3 components of the simplified gradient of the blended \ac{fBm} simplex noise $S_G$, from eq. \ref{eq:grad2}, with non-zero coordinate offset $\vec{o} \ne \vec{0}$ and parameters $a = g = \frac{1}{l} = 1.5, k = 5$. Components visualized as channels of the additive RGB color space. Amplitude adjusted for visualization and clipped to range.}
+    \label{fig:noise-grad-original}
+\end{figure}
+
+The second option seems much more elegant, does not require 3 samples, and may even yield nicer results. Option two was our choice.
+
+Unfortunately, the distance from the \ac{HMD} $r$ is dependent on the $x$, $y$ and $z$ coordinates, which makes the gradient overly complex. For that reason, we have decided to simplify the gradient by treating the $r$ parameter as a constant. We shall denote this simplification of the gradient $\nabla S$ as $S_G \colon \mathbb{R}^n \to \mathbb{R}^n$.
+
+\begin{gather}
+    S_G\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright) = \frac{1}{k} \sum_{i=0}^{k} w(i, r) g^{i+j(r)} \nabla s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright) \odot \begin{bmatrix}f_s\\f_s\\f_s\\f_t\end{bmatrix} l^{i+j(r)}\\
+    = \begin{bmatrix}f_s\\f_s\\f_s\\f_t\end{bmatrix} \odot \mleft( \frac{1}{k} \sum_{i=0}^{k} w(i, r) g^{i+j(r)} \nabla s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright) l^{i+j(r)} \mright) \label{eq:grad1}
+\end{gather}
+
+The $\odot$ operator is the component-wise vector multiplication. For $g = \frac{1}{l}$, we could simplify further:
+
+\begin{equation}\label{eq:grad2}
+    S_G\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright) = \begin{bmatrix}f_s\\f_s\\f_s\\f_t\end{bmatrix} \odot \mleft( \frac{1}{k} \sum_{i=0}^{k} w(i, r) \nabla s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright) \mright)
+\end{equation}
+
+\begin{figure}[htb]
+    \centering
+    \ifgraphics
+        \includegraphics[width=\linewidth]{img/noise-grad-modulated.png}%
+    \fi
+    \caption{The first 3 components of the simplified gradient of the blended \ac{fBm} simplex noise $S'_G$, from eq. \ref{eq:grad3}, with non-zero coordinate offset $\vec{o} \ne \vec{0}$ and parameters $a = g = \frac{1}{l} = 1.5, k = 5$. Components visualized as channels of the additive RGB color space. Amplitude adjusted for visualization and clipped to range.}
+    \label{fig:noise-grad-modulated}
+\end{figure}
+
+As we can see in figure \ref{fig:noise-grad-original}, the direct proportionality of the amplitude and the distance $r$ has been lost. We could have also noticed the $g^{i+j(r)}$ term being cancelled during the simplification step to equation \ref{eq:grad2}. In order to recover it, we need to divide the right-hand side of equation \ref{eq:grad1} by $l^{i+j(r)}$.
+
+\begin{equation}\label{eq:grad3}
+    S'_G\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright) = \begin{bmatrix}f_s\\f_s\\f_s\\f_t\end{bmatrix} \odot \mleft( \frac{1}{k} \sum_{i=0}^{k} w(i, r) g^{i+j(r)} \nabla s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright) \mright)
+\end{equation}
+
+We denote this modulated version of the simplified gradient as $S'_G$. As seen in figure \ref{fig:noise-grad-modulated}, the proportionality is recovered.
+
+This is the final function we have used in our application to displace vertices of the scene geometry. To recapitulate the requirements we have placed upon ourselves to implement this replication, we required the realism not to be broken by the following actions.
+
+\begin{enumerate}
+    \item[$\boxtimes$] The rotation of the \ac{HMD}. Does not influence the sampling in any way, only the location of the \ac{HMD} is relevant. Success.
+    \item[$\boxtimes$] The movement of the \ac{HMD} up to regular walking speed. The movement of the \ac{HMD} makes objects shift their active layers in a continuous, smooth way. Success.
+    \item[$\square$] The fast movement of objects in the scene. Objects moving fast across the screen(s) might appear to morph erratically, significantly faster than the animation speed of still objects. Not ideal.
+\end{enumerate}
+
+Regarding the last point, one might think to modulate the vertex offset by the object's inverse velocity to account for the erratic animation, however, that might result in the object intersecting with the rest of the scene -- for example, with a static wall unaffected by the modulation.
+
+We did not expect any fast-moving objects in the scene, and so this implementation was sufficient for our application.
 
 \subsection{Non-Spatial Effects}
 \subsubsection{Visual Acuity Enhancement}
