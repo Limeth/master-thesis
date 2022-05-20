@@ -73,7 +73,7 @@ This replication simulates the distorted perception of depth, micropsia, and mac
 
 Our replication of the depth perception distortion is implemented as a world-space vertex shader. Even though certain distortions in screen-space may also result in the distortion of depth perception, we chose our approach to achieve better control over the shape of the rendered geometry.
 
-\subsubsubsection{First Attempt}
+\subsubsubsection{First Attempt}\label{sec:depth-first-attempt}
 Our first attempt made use of a self-similar, bijective and continuous function $f$ to modify the distance of vertices from the \ac{HMD}. The self-similarity is required to ensure that no self-intersection of geometry occurs, after the offset has been applied.
 
 \begin{equation}
@@ -288,6 +288,8 @@ Finally, we may or may not want the frequency of the fourth coordinate to be inf
 \end{equation}
 
 This is the final equation used to sample blended \ac{fBm} noise based on the distance $r$ with parameters $a \in \mathbb{R}, \vec{o} \in \mathbb{R}^n, k \in \mathbb{N}$. This equation is used in the application to displace vertices of scene geometry. The result is scaled to ensure that no self-intersections of scene geometry occur.
+
+The current implementation seems to no longer cause motion sickness, in contrast with the previous attempt in section \ref{sec:depth-first-attempt}. We believe the improvement in this regard was caused by the reduction of the size of vertex clusters influenced in the same direction (towards or away from the \ac{HMD}).
 
 \begin{figure}[H]
     \centering
