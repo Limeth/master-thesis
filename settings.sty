@@ -271,4 +271,8 @@
 % A replacement for \vec{x}' that doesn't make the ' collide with the arrow
 \newcommand{\pvec}[1]{\vec{#1}\mkern2mu\vphantom{#1}}
 
+% Prefix for a section that removes it from the table of contents (TOC): \tocless\section{...}
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+
 % \raggedbottom

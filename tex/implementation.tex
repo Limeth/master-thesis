@@ -572,7 +572,7 @@ First, we have received feedback, that the tracers should not be as noticeable d
 
 And second, our implementation completely ignores the direction the user is looking, it only considers the rotation of the \ac{HMD}. A precise eye-tracking device built-into the \ac{HMD} would be required to develop a method that takes the the direction of eyes into account.
 
-Finally, regarding discontinuous tracers, the implementation of such an effect would require keeping more temporal information than just a single accumulation texture. Probably, a 3-dimensional texture would have to be used, with the width and height of the screen and the depth of $\frac{1}{\Delta t} \cdot T$, where $\frac{1}{\Delta t}$ is the framerate, and $T \in (0; +\infty)$ is the delay of the first positive after-image of the tracers. One challenge may stem from the fact that the framerate of a \ac{VR} application is typically not uniform.
+Finally, regarding discontinuous tracers, the implementation of such an effect would require keeping more temporal information than just a single accumulation texture. Probably, a 3-dimensional texture would have to be used, with the width and height of the screen and the depth of $\frac{1}{\Delta t} \cdot T$, where $\frac{1}{\Delta t}$ is the framerate, and $T \in (0; +\infty)$ is the delay of the first positive after-image of the tracers. The main challenges may stem from the fact that the framerate of a \ac{VR} application is typically not uniform, as well as from the memory requirements for storing such texture.
 
 \begin{figure}[H]
     \centering

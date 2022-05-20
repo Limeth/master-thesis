@@ -2,7 +2,7 @@
 \section{Discussion}
 In this work, we have explored various contemporary attempts at replicating \acfp{ASC} induced by classical psychedelics. We have also explored potential applications of the replications of psychedelic-induced \acp{ASC}.
 
-We created an application for immersive \acf{VR}, which is capable of producing a complex replication of a psychedelic-induced \ac{ASC}. This complex replication was a combination of partial replications of the following distincts aspects of \acp{ASC}:
+We created an application for immersive \acf{VR}, which is capable of producing a complex replication of a psychedelic-induced \ac{ASC}. This complex replication was a combination of partial replications of the following distincts aspects typical for a low-dose ``perceptual stage'' psychedelic-induced \acp{ASC}:
 
 \begin{enumerate}
     \setlength{\itemsep}{0pt}
@@ -18,14 +18,47 @@ We measured the impact of the implemented complex replication with $N=10$ subjec
 \section{Limitations}
 The study we have conducted was constrained by the following limitations.
 
-\textbf{Lack of the Visualization of the User's Body}.\\
+\tocless{\subsection*{Lack of the Visualization of the User's Body}}
 Displaying the user's body in \ac{VR} realistically is an unsolved issue for consumer-grade \ac{VR} systems. Ideally, the user would be able to see their real body, possibly via a filtered view of a pass-through camera built-into the \acf{HMD}, or maybe via a 3D-reconstructed model from external cameras. A 3D-reconstructed model would be ideal, because the spatial effects could be applied to the scene as well as the body, which would provide an better sense of micropsia and macropsia.
 
-\textbf{Low Sample Size.}\\
+\tocless{\subsection*{Low Sample Size}}
 The results of our study were mainly limited by the low number of participants ($N=10$). We might have been able to reach more conclusive results, had the sample size been larger.
 
-\textbf{No Sound Isolation.}\\
+\tocless{\subsection*{No Sound Isolation}}
 Our experimental conditions did not allow for sound isolation. Often, noises could be heard from adjacent rooms, or from the outside through the window that we consistenly kept open during testing. In retrospect, a closed room with proper sound isolation and a quiet ventilation system would have provided better experimental conditions. The silence could be substituted with natural ambient noises appropriate for the virtual scene.
 
 \section{Future Work}
-Other aspects (time perception, synaesthesia), stronger hypothesis, eye tracking, hand tracking, body tracking, indoor scene, improvements for tracer effect, geometry/mesh shaders
+\tocless{\subsection*{Other Replications}}
+Our work has definitely not exhausted all aspects of psychedelic-induced \acp{ASC} for the replication via \ac{VR}. The following aspects come to mind, that we think would be suitable for \ac{VR}. The main challange is to be able to implement the replications in a general way, so that they perform well no matter the virtual scene the user finds themselves in.
+
+\tocless{\subsubsection*{Time Perception Distortion}}
+By distorting the simulation timestep, we might be able to replicate the sense of distorted time perception. The virtual scene of our application did not have any elements or objects for which that would matter, and so we could not simulate this effect.
+
+\tocless{\subsubsection*{Synesthesiae}}
+The replication of various kinds of synesthesia could be explored; mainly, audio-visual synesthesia, or audio-vibrotactile synesthesia. We did not attempt to replicate these kinds of synesthesia, as they would require sound, which our application lacks. Both of these synesthesiae would provide the best experience with music; however, music tends to have a significant emotional impact on the listener, that might have distorted the measurements in our study, and so no music was used.
+
+\tocless{\subsubsection*{Auditory Effects}}
+Various kinds of auditory distortions could be explored. Specifically, slight variations in pitch and speed of playback seem like potential effects suitable for replication.
+
+\tocless{\subsubsection*{Discontinuous Visual Tracing}}
+We have implemented a continuous form of visual tracing and hinted towards a possible method of implementing a discontinuous form visual tracing.
+
+\tocless{\subsubsection*{Hue Shifting}}
+A common effect of classical psychedelics are various forms of hue shifting. We avoided this aspect, as we did not feel confident in replicating it correctly. A thorough examination of individual reports of psychedelic experiences, which detail this phenomenon, may be in order.
+
+\tocless{\subsection*{A Stonger Hypothesis}}
+In this work, we only measured whether the implemented replication had any effect on the questionnaire scorings. A stronger hypothesis would be to model a specific psychedelic substance and attempt to match the results of the questionnaire scorings with results from a low-dose clinical study of that substance. However, this would require, comparatively, a massive amount of effort.
+
+\tocless{\subsection*{Eye Tracking}}
+Eye tracking has the potential not only to improve the performance of our application using state of the art rendering technologies, such as foveated rendering, it also has the potential to improve the implementation of our replication of \textit{visual tracing}. Currently, our implementation of this replication responds to the movement of the \ac{HMD}, rather than the movement of eyes.
+
+\tocless{\subsection*{Hand Tracking}}
+As discussed in the limitations, our application lacks a representation of the user's body. We proposed a solution by modelling the user's entire body, but there is also a possible middle ground that could be pursued instead -- tracking the user's hands. The user's virtual representation of their hands may be sufficient to provide a better sense of spatial effects.
+
+\tocless{\subsection*{An Indoor Scene}}
+Our application uses an outdoor scene, but the complex replication is implemented in a universal way, such that it can be used in any scene, including an indoor scene. An indoor scene might result in vastly different scores of the chosen questionnaire scorings.
+
+\tocless{\subsection*{Geometry Subdivision}}
+The implemented spatial effects could be improved by the use of dynamic subdivision of geometry. Both spatial effects make use of a non-linear transformation of vertices. This results in the movement of seams of any two intersecting models. Dynamic subdivision may be used to mitigate this issue, by making it less apparent.
+
+Unfortunately, dynamic subdivision requires geometry shaders, which are considered deprecated, in the current version of graphics \acp{API}. Fortunately, they have been deprecated in favor of mesh shaders. Nevertheless, the implementation of dynamic subdivision in \ac{UE4} has been unreliable.
