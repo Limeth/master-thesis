@@ -31,16 +31,6 @@ In any case, no such force feedback haptic gloves were available to us for this 
 \subsection{Virtual Scene Creation}
 Given the goal of creating as realistic of a scene as possible, as well as no financial budget for this project, we ended up choosing \fref{https://web.archive.org/web/20220514231756/https://www.unrealengine.com/en-US}{\acf{UE4}} as the game development engine to develop our \ac{VR} application with. \ac{UE4} is free to use for projects with a lifetime gross revenue below \$1 million USD, and we have no plans to monetize it. Additionally, the choice of \ac{UE4} makes it possible to use the \fref{https://web.archive.org/web/20220514233901/https://quixel.com/megascans}{Quixel Megascans} 3D asset library for free within \ac{UE4}, due to special licensing as a result of the acquisition of Quixel by \fref{https://web.archive.org/web/20220514235540/https://www.epicgames.com/site/en-US/home}{Epic Games}, the developer of \ac{UE4}.
 
-The virtual scene was created with the intended \textit{\ac{VR} play space} in mind, which was measured to be about $3.5\times3.5 \:\si{m^2}$ large. The virtual scene contains visual cues of the \textit{play area} borders in the form of 3D assets; specifically, the \textit{play area} is surrounded by a railing and tall rock, communicating to the user, that these objects should not be passed through.
-
-The choice was made to create an outdoor scene, as the surrounding nature might provide a more pleasant environment than an indoor scene. However, our implementation is in no way limited to outdoor scenes only.
-
-At first, we attempted to create a forest scene, but quickly ran into performance issues while trying to render a densely populated forest on a \ac{HMD}, which requires at least 2 views rendered at typically higher resolutions than a regular desktop screen, ideally with at least 90 \acs{FPS} (the native refresh rate of the \ac{HMD}). Delivering a consistent framerate is a requirement, as low framerates and stuttering may cause motion sickness.
-
-It was then decided to abandon the idea of a forest scene and, instead, use a \ac{HDRI} panoramic photograph as a background (hereinafter ``panoramic background'') for the scene. It is important to note, that a panoramic background has no depth information. This drawback can be mitigated by making only the very distant parts of the panoramic background visible to the user, so that the illusion of the panoramic background being realistic is not broken. The illusion relies on the fact that binocular disparity is low for distant objects.
-
-Close parts of the panoramic background can be hidden with 3D assets suitable for the environment. To minimize the area that needed to be hidden, we have chosen a mountainside panoramic background (see figure \ref{fig:cannon}).
-
 \begin{figure}[H]
     \centering
     \ifgraphics
@@ -49,7 +39,11 @@ Close parts of the panoramic background can be hidden with 3D assets suitable fo
     \caption{The chosen panoramic background ``Cannon''\cczerofootnote{Greg Zaal} available on \fref{https://web.archive.org/web/20220515010919/https://polyhaven.com/a/cannon}{Poly Haven}.}\label{fig:cannon}
 \end{figure}
 
-The final scene contains a flat patch of grass and other low foliage the size of the \textit{play area}, containing a wooden bench with some gardening tools. The grass patch is surrounded with rock formations and a rocky stairway leading towards it. Beyond the railing, there is a nice view of the sea cove. A preview of the created scene can be seen in figure \ref{fig:scene-preview-1} and \ref{fig:scene-preview-2}.
+The virtual scene was created with the intended \textit{\ac{VR} play space} in mind, which was measured to be about $3.5\times3.5 \:\si{m^2}$ large. The virtual scene contains visual cues of the \textit{play area} borders in the form of 3D assets; specifically, the \textit{play area} is surrounded by a railing and tall rock, communicating to the user, that these objects should not be passed through.
+
+The choice was made to create an outdoor scene, as the surrounding nature might provide a more pleasant environment than an indoor scene. However, our implementation is in no way limited to outdoor scenes only.
+
+At first, we attempted to create a forest scene, but quickly ran into performance issues while trying to render a densely populated forest on a \ac{HMD}, which requires at least 2 views rendered at typically higher resolutions than a regular desktop screen, ideally with at least 90 \acs{FPS} (the native refresh rate of the \ac{HMD}). Delivering a consistent framerate is a requirement, as low framerates and stuttering may cause motion sickness.
 
 \begin{figure}[H]
     \centering
@@ -66,6 +60,12 @@ The final scene contains a flat patch of grass and other low foliage the size of
     \fi
     \caption{A preview of the resulting scene. A view of the panoramic background is shown.}\label{fig:scene-preview-2}
 \end{figure}
+
+It was then decided to abandon the idea of a forest scene and, instead, use a \ac{HDRI} panoramic photograph as a background (hereinafter ``panoramic background'') for the scene. It is important to note, that a panoramic background has no depth information. This drawback can be mitigated by making only the very distant parts of the panoramic background visible to the user, so that the illusion of the panoramic background being realistic is not broken. The illusion relies on the fact that binocular disparity is low for distant objects.
+
+Close parts of the panoramic background can be hidden with 3D assets suitable for the environment. To minimize the area that needed to be hidden, we have chosen a mountainside panoramic background (see figure \ref{fig:cannon}).
+
+The final scene contains a flat patch of grass and other low foliage the size of the \textit{play area}, containing a wooden bench with some gardening tools. The grass patch is surrounded with rock formations and a rocky stairway leading towards it. Beyond the railing, there is a nice view of the sea cove. A preview of the created scene can be seen in figure \ref{fig:scene-preview-1} and \ref{fig:scene-preview-2}.
 
 \section{Implementation of Replications}\label{sec:implementation}
 The following replications are modelled after surveys of the phenomenology of psychedelic states \autocites{preller2016phenomenology}{kometer2016serotonergic} and personal reports \autocite{kleinman1977comparison}.
@@ -438,7 +438,7 @@ Then, we have two ways of using this noise function to generate an offset vector
     \vec{v} \coloneqq \begin{bmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\end{bmatrix} \nabla S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright)
 \end{equation}
 
-\begin{figure}[htb]
+\begin{figure}[H]
     \centering
     \ifgraphics
         \includegraphics[width=\linewidth]{img/noise-grad-original.png}%
@@ -462,7 +462,7 @@ The $\odot$ operator is the component-wise vector multiplication. For $g = \frac
     S_G\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright) = \begin{bmatrix}f_s\\f_s\\f_s\\f_t\end{bmatrix} \odot \mleft( \frac{1}{k} \sum_{i=0}^{k} w(i, r) \nabla s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright) \mright)
 \end{equation}
 
-\begin{figure}[htb]
+\begin{figure}[H]
     \centering
     \ifgraphics
         \includegraphics[width=\linewidth]{img/noise-grad-modulated.png}%
@@ -522,7 +522,7 @@ where $\pvec{c}' \in [0; 1]^3$ is the resulting texel color, $\vec{c} \in [0; 1]
 
 Since Gaussian blur is a low-pass filter, the result of $(\vec{c} - \vec{c}_{G(r)})$ is a high-pass filtered image, as it is the original without the low-frequency information.
 
-A 2-dimensional Gaussian blur may be implemented in two ways; via a 2-dimensional convolution, or, thanks to the Gaussian blur being a separable filter, using a two-pass 1-dimensional convolution. The time complexity is $\mathcal{O}(w_{kernel}^2w_{image}h_{image})$ and $\mathcal{O}(w_{kernel}w_{image}h_{image})$, respectively.
+A 2-dimensional Gaussian blur may be implemented in two ways; via a 2-dimensional convolution, or, thanks to the Gaussian blur being a separable filter, using a two-pass 1-dimensional convolution. The time complexity is $\mathcal{O}(w_{kernel}^2w_{image}h_{image})$ and $\mathcal{O}(w_{kernel} \allowbreak w_{image}h_{image})$, respectively.
 
 We used the two-pass 1-dimensional method for its advantageous time complexity. Our implementation pre-computes one half of the symmetric convolution matrix on the CPU, according to the specified radius and the resolution of the texture. The execution order of separate steps of the algorithm is shown in figure \ref{fig:sharpening}.
 
@@ -535,7 +535,7 @@ It is noteworthy to mention one significant drawback of our approach -- the resu
     \ifgraphics
         \includegraphics[width=\textwidth]{img/simr-sharpening.png}
     \fi
-    \caption{The resulting sharpening effect implemented via an unsharp masking filter based on Gaussian blur. Left half of the image shows the original, right half shows the result of applying the filter. The filter is exaggerated for illustrative purposes.}\label{fig:sharpening-demo}
+    \caption{The resulting sharpening effect implemented via an unsharp masking filter based on Gaussian blur. The left half of the image shows the original unaltered view, whereas the right half shows the same view with the filter applied. The filter is exaggerated for illustrative purposes.}\label{fig:sharpening-demo}
 \end{figure}
 
 \begin{figure}[H]

@@ -8,7 +8,7 @@ It may be a mistake to assume that the resulting factors are normally distribute
 As an alternative, it may be much more appropriate to use a bounded distribution to model the resulting factors instead. The following two may be suitable:
 
 \begin{enumerate}
-    \item The logit-normal distribution: If $X$ is logit-normally distributed, then $Y = \operatorname{logit}(X) = \ln(\frac{X}{1 - X})$ is normally distributed. Essentially, the $\operatorname{logit}$ transform stretches the lower (0) and upper (1) bounds to infinity (see figure \ref{fig:graph-logit}). However, the $\operatorname{logit}$ transform's domain is an open interval $(0; 1)$, rather than a closed interval $[0; 1]$, which prevents it from being usable with measurements at the bounds. This is, unfortunately, the case for the psychometric questionnaire used in this study, as participants may answer with $0\%$ or $100\%$.
+    \item The logit-normal distribution: If $X$ is logit-normally distributed, then $Y = \operatorname{logit}(X) \allowbreak = \ln(\frac{X}{1 - X})$ is normally distributed. Essentially, the $\operatorname{logit}$ transform stretches the lower (0) and upper (1) bounds to infinity (see figure \ref{fig:graph-logit}). However, the $\operatorname{logit}$ transform's domain is an open interval $(0; 1)$, rather than a closed interval $[0; 1]$, which prevents it from being usable with measurements at the bounds. This is, unfortunately, the case for the psychometric questionnaire used in this study, as participants may answer with $0\%$ or $100\%$.
     \item The beta distribution: Doesn't suffer from the necessity of using a transform that would be undefined at the bounds. Possibly even more expressive than the logit-normal distribution.
 \end{enumerate}
 
