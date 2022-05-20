@@ -15,10 +15,15 @@
 \let\cleardoublepage=\clearpage
 
 % Enable/Disable graphics to speed up rendering/compilation time during writing.
-% Use `\ifgraphics ... \figraphics` to declare blocks affected by the toggle.
+% Use `\ifgraphics ... \fi` to declare blocks affected by the toggle.
 \newif\ifgraphics
 % \graphicstrue  % Enable graphics
 \graphicsfalse % Disable graphics
+
+% Enable/Disable the inclusion of the unsigned project specification
+\newif\ifprojectspec
+% \projectspectrue
+\projectspecfalse
 
 \begin{document}
 
@@ -92,4 +97,5 @@
 \input{tex/appendix-questionnaire}
 \input{tex/appendix-informed-consent}
 \input{tex/appendix-analysis-remarks}
+\input{tex/appendix-project-specification}
 \end{document}
