@@ -2,7 +2,7 @@
 \section{Discussion}
 In this work, we have explored various contemporary attempts at replicating \acfp{ASC} induced by classical psychedelics. We have also explored potential applications of the replications of psychedelic-induced \acp{ASC}.
 
-We created an application for immersive \acf{VR}, which is capable of producing a complex replication of a psychedelic-induced \ac{ASC}. This complex replication was a combination of partial replications of the following distincts aspects typical for a low-dose ``perceptual stage'' psychedelic-induced \acp{ASC}:
+We created an application for immersive \acf{VR}, which is capable of producing a complex replication of a psychedelic-induced \ac{ASC}. This complex replication was a combination of partial replications of the following distinct aspects typical for low-dose ``perceptual stage'' psychedelic-induced \acp{ASC}:
 
 \begin{enumerate}
     \setlength{\itemsep}{0pt}
@@ -13,7 +13,7 @@ We created an application for immersive \acf{VR}, which is capable of producing 
     \item Tracers (Visual Tracing)
 \end{enumerate}
 
-We measured the impact of the implemented complex replication with $N=10$ subjects on the scores of the \acf{5D-ASC} and the \acf{11-ASC}, and confirmed, that they are influenced by the implemented complex replication. This finding suggests, that \ac{VR} is an effective medium for the replication of certain aspects of \acp{ASC}.
+We measured the impact of the implemented complex replication with $N=10$ subjects on the scores of the \acf{5D-ASC} and the \acf{11-ASC}, and confirmed they are influenced by the implemented complex replication. This finding suggests \ac{VR} is an effective medium for the replication of certain aspects of \acp{ASC}.
 
 \section{Limitations}
 The study we have conducted was constrained by the following limitations.
@@ -29,19 +29,19 @@ Our experimental conditions did not allow for sound isolation. Often, noises cou
 
 \section{Future Work}
 \tocless{\subsection*{Other Replications}}
-Our work has definitely not exhausted all aspects of psychedelic-induced \acp{ASC} for the replication via \ac{VR}. The following aspects come to mind, that we think would be suitable for \ac{VR}. The main challange is to be able to implement the replications in a general way, so that they perform well no matter the virtual scene the user finds themselves in.
+Our work has definitely not exhausted all aspects of psychedelic-induced \acp{ASC} for the replication via \ac{VR}. A large challenge is to implement replications more generally, for consistent performance regardless of the user's virtual scene. The following aspects may be suitable for replication specifically via \ac{VR}.
 
 \tocless{\subsubsection*{Time Perception Distortion}}
-By distorting the simulation timestep, we might be able to replicate the sense of distorted time perception. The virtual scene of our application did not have any elements or objects for which that would matter, and so we could not simulate this effect.
+By distorting the simulation timestep, we might be able to replicate the sense of distorted time perception. The virtual scene of our application did not have any relevant elements or objects, so this effect remains untested.
 
 \tocless{\subsubsection*{Synesthesiae}}
-The replication of various kinds of synesthesia could be explored; mainly, audio-visual synesthesia, or audio-vibrotactile synesthesia. We did not attempt to replicate these kinds of synesthesia, as they would require sound, which our application lacks. Both of these synesthesiae would provide the best experience with music; however, music tends to have a significant emotional impact on the listener, that might have distorted the measurements in our study, and so no music was used.
+The replication of various kinds of synesthesia could be explored, namely audio-visual synesthesia or audio-vibrotactile synesthesia. We did not attempt to replicate these kinds of synesthesia as our application does not incorporate sound. Both of these synesthesiae would provide the best experience with music. However, music tends to have a significant emotional impact on the listener that might have distorted the measurements in our study. Thus, no music was used.
 
 \tocless{\subsubsection*{Auditory Effects}}
 Various kinds of auditory distortions could be explored. Specifically, slight variations in pitch and speed of playback seem like potential effects suitable for replication.
 
 \tocless{\subsubsection*{Discontinuous Visual Tracing}}
-We have implemented a continuous form of visual tracing and hinted towards a possible method of implementing a discontinuous form visual tracing.
+We have implemented a continuous form of \textit{visual tracing} and hinted towards a possible method of implementing a discontinuous form of \textit{visual tracing}.
 
 \tocless{\subsubsection*{Hue Shifting}}
 A common effect of classical psychedelics are various forms of hue shifting. We avoided this aspect, as we did not feel confident in replicating it correctly. A thorough examination of individual reports of psychedelic experiences, which detail this phenomenon, may be in order.
@@ -50,15 +50,15 @@ A common effect of classical psychedelics are various forms of hue shifting. We 
 In this work, we only measured whether the implemented replication had any effect on the questionnaire scorings. A stronger hypothesis would be to model a specific psychedelic substance and attempt to match the results of the questionnaire scorings with results from a low-dose clinical study of that substance. However, this would require, comparatively, a massive amount of effort.
 
 \tocless{\subsection*{Eye Tracking}}
-Eye tracking has the potential not only to improve the performance of our application using state of the art rendering technologies, such as foveated rendering, it also has the potential to improve the implementation of our replication of \textit{visual tracing}. Currently, our implementation of this replication responds to the movement of the \ac{HMD}, rather than the movement of eyes.
+Eye tracking has the potential not only to improve the performance of our application using state of the art rendering technologies, such as foveated rendering. It also has the potential to improve the implementation of our replication of \textit{visual tracing}. Currently, our implementation of this replication responds to the movement of the \ac{HMD} rather than the eyes.
 
 \tocless{\subsection*{Hand Tracking}}
 As discussed in the limitations, our application lacks a representation of the user's body. We proposed a solution by modelling the user's entire body, but there is also a possible middle ground that could be pursued instead -- tracking the user's hands. The user's virtual representation of their hands may be sufficient to provide a better sense of spatial effects.
 
 \tocless{\subsection*{An Indoor Scene}}
-Our application uses an outdoor scene, but the complex replication is implemented in a universal way, such that it can be used in any scene, including an indoor scene. An indoor scene might result in vastly different scores of the chosen questionnaire scorings.
+Our application uses an outdoor scene, but the complex replication is implemented in a universal way, such that it can be used in any scene. An indoor scene might result in vastly different scores of the chosen questionnaire scorings.
 
 \tocless{\subsection*{Geometry Subdivision}}
-The implemented spatial effects could be improved by the use of dynamic subdivision of geometry. Both spatial effects make use of a non-linear transformation of vertices. This results in the movement of seams of any two intersecting models. Dynamic subdivision may be used to mitigate this issue, by making it less apparent.
+The implemented spatial effects could be improved by the use of dynamic subdivision of geometry. Both spatial effects make use of a non-linear transformation of vertices, resulting in the movement of seams between any two intersecting models. Dynamic subdivision may be used to mitigate this issue by making it less apparent.
 
 Unfortunately, dynamic subdivision requires geometry shaders, which are considered deprecated, in the current version of graphics \acp{API}. Fortunately, they have been deprecated in favor of mesh shaders. Nevertheless, the implementation of dynamic subdivision in \ac{UE4} has been unreliable.

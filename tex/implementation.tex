@@ -1,5 +1,5 @@
 \chapter{Implementation}
-The objective of this part of the project was to implement an immersive replication of \acp{ASC} induced by classical psychedelics. In order to achieve a high degree of immersion, our solution was designed to be intended for immersive \ac{VR} systems with \acp{HMD}. Our solution will be referred to with \textit{``the application''} or \textit{``our application''} for the rest of this document.
+The objective of this part of the project was to implement an immersive replication of \acp{ASC} induced by classical psychedelics. In order to achieve a high degree of immersion, our solution was designed with the intent of being used in immersive \ac{VR} systems with \acp{HMD}. Our solution will be referred to with \textit{``the application''} or \textit{``our application''} for the rest of this document.
 
 To represent the \acp{ASC} of classical psychedelics objectively, we had to resort to modelling only the ``perceptual level'' stage of the psychedelic experience (as seen in figure \ref{fig:temporal-dynamics}), as further stages require subjective personalization of content, and aspects less suitable for replication via immersive \ac{VR}, such as cognitive effects and the suppression of the \textit{phenomenological ego}.
 
@@ -15,7 +15,7 @@ The application was designed primarily for the evaluation of the implemented rep
 \subsection{Safety}
 In order to ensure our application's users safety, we have consulted the \textit{Recommendations for good scientific practice and the consumers of VR-technology} \autocite{madary2016real}. The application was developed according to these recommendations.
 
-Mainly, we don't expect the developed application to have lasting traumatic effects on the users; instead, we believe that this medium may be a suitable way to explore aspects of psychedelic-induced \acp{ASC} while minimizing those risks.
+Primarily, we don't expect the developed application to have lasting traumatic effects on the users; instead, we believe that this medium may be a suitable way to explore aspects of psychedelic-induced \acp{ASC} while minimizing those risks.
 
 Further, we've taken safety and intuitiveness into account while designing the controls and choosing a suitable testing area for experimentation with \ac{VR} (the ``\ac{VR} play space'').
 
@@ -71,7 +71,7 @@ The final scene contains a flat patch of grass and other low foliage the size of
 The following replications are modelled after surveys of the phenomenology of psychedelic states \autocites{preller2016phenomenology}{kometer2016serotonergic} and personal reports \autocite{kleinman1977comparison}.
 
 \subsection{Spatial Effects}
-The spacial effects of this section are a form of a vertex shader, or part thereof. \ac{UE4} has a concept of so-called ``materials'' -- assets that can be applied to meshes to control the visual look of 3D assets. \ac{UE4} materials are defined using a built-in visual programming node graph. While this approach of specifying \ac{GPU} shader logic allows for tighter integration with \ac{UE4}'s rendering engine and its lighting model, it makes it difficult to use conventional shading languages such as \ac{GLSL} or \ac{HLSL}. The usage of conventional shading languages is sometimes desirable, because the provided material node graph editor cannot, by design, express some control flow constructs, such as loops.
+The spatial effects of this section are a form of a vertex shader, or part thereof. \ac{UE4} has a concept of so-called ``materials'' -- assets that can be applied to meshes to control the visual look of 3D assets. \ac{UE4} materials are defined using a built-in visual programming node graph. While this approach of specifying \ac{GPU} shader logic allows for tighter integration with \ac{UE4}'s rendering engine and its lighting model, it makes it difficult to use conventional shading languages such as \ac{GLSL} or \ac{HLSL}. The usage of conventional shading languages is sometimes desirable, because the provided material node graph editor cannot, by design, express some control flow constructs, such as loops.
 
 However unwieldy, it is possible to use \ac{HLSL} code in material graphs, in \ac{UE4}. The directory of our custom \ac{HLSL} shader files must be properly registered in the engine via an engine plugin \autocite{synthenz2021shaderdir}. The shader files can then be referenced from within ``custom'' nodes of the material node graph editor.
 
@@ -528,7 +528,7 @@ We used the two-pass 1-dimensional method for its advantageous time complexity. 
 
 The resulting sharpening effect (without uniform saturation and contrast enhancement from the previous section) can be seen in figure \ref{fig:sharpening-demo}.
 
-It is noteworthy to mention one significant drawback of our approach -- the resulting effect is not perceptually uniform across the whole screen. This is caused by the fact that we see the majority of the screen under an non-perpendicular angle, and so the convolution matrix is skewed from our point of view. As an improvement for the future, one might want to consider performing the Gaussian blur on the surface of a sphere centered around the \ac{HMD}, to which the screen texture is projected.
+It is noteworthy to mention one significant drawback of our approach -- the resulting effect is not perceptually uniform across the whole screen. This is caused by the fact that the user sees the majority of the screen under a non-perpendicular angle, and so the convolution matrix is skewed from their point of view. As an improvement for the future, one might want to consider performing the Gaussian blur on the surface of a sphere centered around the \ac{HMD}, to which the screen texture is projected.
 
 \begin{figure}[H]
     \centering
@@ -564,7 +564,7 @@ It is noteworthy to mention one significant drawback of our approach -- the resu
 
 \subsubsection{Tracers}
 
-``Tracers'' is the colloquial name for visual tracing, the last aspect of psyechedelic-induced \acp{ASC} we implemented a replication of in our application. Tracers are shown as positive after-images of moving objects, and can appear either continuous or discontinuous \autocites{hartman1963effect}{diaz2010sacred}{anderson1972trifluoperazine}{kleinman1977comparison}. We focused on the replication of the continuous form of tracers.
+``Tracers'' is the colloquial name for visual tracing, the last aspect of psychedelic-induced \acp{ASC} for which a replication was implemented in our application. Tracers are shown as positive after-images of moving objects, and can appear either continuous or discontinuous \autocites{hartman1963effect}{diaz2010sacred}{anderson1972trifluoperazine}{kleinman1977comparison}. We focused on the replication of the continuous form of tracers.
 
 The implementation required the persistence of image data between frames, which has been accomplished by the usage of an accumulation texture, one for each screen of the \ac{HMD}. The replication has been implemented via the following post-processing operation:
 
