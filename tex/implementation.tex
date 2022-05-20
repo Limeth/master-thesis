@@ -44,29 +44,38 @@ Close parts of the panoramic background can be hidden with 3D assets suitable fo
 \begin{figure}[H]
     \centering
     \ifgraphics
-        \includegraphics[width=0.95\textwidth]{img/cannon.png}
+        \includegraphics[width=\textwidth]{img/cannon.png}
     \fi
     \caption{The chosen panoramic background ``Cannon''\cczerofootnote{Greg Zaal} available on \fref{https://web.archive.org/web/20220515010919/https://polyhaven.com/a/cannon}{Poly Haven}.}\label{fig:cannon}
 \end{figure}
 
-The final scene contains a flat patch of grass and other low foliage the size of the \textit{play area}, containing a wooden bench with some gardening tools. The grass patch is surrounded with rock formations and a rocky stairway leading towards it. Beyond the railing, there is a nice view of the sea cove.
+The final scene contains a flat patch of grass and other low foliage the size of the \textit{play area}, containing a wooden bench with some gardening tools. The grass patch is surrounded with rock formations and a rocky stairway leading towards it. Beyond the railing, there is a nice view of the sea cove. A preview of the created scene can be seen in figure \ref{fig:scene-preview-1} and \ref{fig:scene-preview-2}.
 
 \begin{figure}[H]
     \centering
     \ifgraphics
-        TODO: image of the scene
-        % \includegraphics[width=0.95\textwidth]{img/cannon.png}
+        \includegraphics[width=\textwidth]{img/simr-scene-demo-1.png}
     \fi
-    \caption{A preview of the resulting scene.}\label{fig:scene-preview}
+    \caption{A preview of the resulting scene. The view shows a grass patch corresponding to the \textit{play space}.}\label{fig:scene-preview-1}
 \end{figure}
 
-\section{Implementation of Replications}\ref{sec:implementation}
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \includegraphics[width=\textwidth]{img/simr-scene-demo-2.png}
+    \fi
+    \caption{A preview of the resulting scene. A view of the panoramic background is shown.}\label{fig:scene-preview-2}
+\end{figure}
+
+\section{Implementation of Replications}\label{sec:implementation}
 The following replications are modelled after surveys of the phenomenology of psychedelic states \autocites{preller2016phenomenology}{kometer2016serotonergic} and personal reports \autocite{kleinman1977comparison}.
 
 \subsection{Spatial Effects}
 The spacial effects of this section are a form of a vertex shader, or part thereof. \ac{UE4} has a concept of so-called ``materials'' -- assets that can be applied to meshes to control the visual look of 3D assets. \ac{UE4} materials are defined using a built-in visual programming node graph. While this approach of specifying \ac{GPU} shader logic allows for tighter integration with \ac{UE4}'s rendering engine and its lighting model, it makes it difficult to use conventional shading languages such as \ac{GLSL} or \ac{HLSL}. The usage of conventional shading languages is sometimes desirable, because the provided material node graph editor cannot, by design, express some control flow constructs, such as loops.
 
 However unwieldy, it is possible to use \ac{HLSL} code in material graphs, in \ac{UE4}. The directory of our custom \ac{HLSL} shader files must be properly registered in the engine via an engine plugin \autocite{synthenz2021shaderdir}. The shader files can then be referenced from within ``custom'' nodes of the material node graph editor.
+
+In this section, we made use of an existing implementation of Simplex noise, and of its gradient, and modified it for \ac{HLSL} \autocite{ashima2011simplex}.
 
 \subsubsection{Depth Perception Distortion}
 This replication simulates the distorted perception of depth, micropsia, and macropsia \autocites{fischer1970psilocybin}{dittrich1998standardized}{hill1969effects}{hill1973induction}.
@@ -517,9 +526,17 @@ A 2-dimensional Gaussian blur may be implemented in two ways; via a 2-dimensiona
 
 We used the two-pass 1-dimensional method for its advantageous time complexity. Our implementation pre-computes one half of the symmetric convolution matrix on the CPU, according to the specified radius and the resolution of the texture. The execution order of separate steps of the algorithm is shown in figure \ref{fig:sharpening}.
 
-The resulting sharpening effect (without uniform saturation and contrast enhancement from the previous section) can be seen in figure \ref{fig:TODO}.
+The resulting sharpening effect (without uniform saturation and contrast enhancement from the previous section) can be seen in figure \ref{fig:sharpening-demo}.
 
 It is noteworthy to mention one significant drawback of our approach -- the resulting effect is not perceptually uniform across the whole screen. This is caused by the fact that we see the majority of the screen under an non-perpendicular angle, and so the convolution matrix is skewed from our point of view. As an improvement for the future, one might want to consider performing the Gaussian blur on the surface of a sphere centered around the \ac{HMD}, to which the screen texture is projected.
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \includegraphics[width=\textwidth]{img/simr-sharpening.png}
+    \fi
+    \caption{The resulting sharpening effect implemented via an unsharp masking filter based on Gaussian blur. Left half of the image shows the original, right half shows the result of applying the filter. The filter is exaggerated for illustrative purposes.}\label{fig:sharpening-demo}
+\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -564,18 +581,6 @@ is the the linear interpolation function, also known as \texttt{mix} in \ac{GLSL
 
 Another visualization of the operation is shown as an execution graph in figure \ref{fig:tracers-graph}.
 
-The parameter $\alpha$ corresponds to the overall opacity of the effect, which is fine-tuned, so that the effect does not cause motion sickness by dominating the visual field. The parameter $\beta$ controls the feedback strength, which can be understood as a parameter that influences the duration of the temporal blur or ``exposition time''. The $\Delta t$ parameter provides resiliency to framerate fluctuations.
-
-This is the final form of the effect that has been used in our application.
-
-Nevertheless, the current form of the implementation has some drawbacks, that we have identified late in the development of the application.
-
-First, we have received feedback, that the tracers should not be as noticeable during the movement or rotation of the \ac{HMD}, compared to moving objects in the scene. Despite that, we decided to keep our implementation, because we find it unlikely, that the psychedelic-induced \ac{ASC} would somehow change the perception of objects moving relative to some kind of absolute world frame \textit{only}, rather than of any object that has been moved within the person's field of view.
-
-And second, our implementation completely ignores the direction the user is looking, it only considers the rotation of the \ac{HMD}. A precise eye-tracking device built-into the \ac{HMD} would be required to develop a method that takes the the direction of eyes into account.
-
-Finally, regarding discontinuous tracers, the implementation of such an effect would require keeping more temporal information than just a single accumulation texture. Probably, a 3-dimensional texture would have to be used, with the width and height of the screen and the depth of $\frac{1}{\Delta t} \cdot T$, where $\frac{1}{\Delta t}$ is the framerate, and $T \in (0; +\infty)$ is the delay of the first positive after-image of the tracers. The main challenges may stem from the fact that the framerate of a \ac{VR} application is typically not uniform, as well as from the memory requirements for storing such texture.
-
 \begin{figure}[H]
     \centering
     \ifgraphics
@@ -612,6 +617,26 @@ Finally, regarding discontinuous tracers, the implementation of such an effect w
         \end{tikzpicture}
     \fi
     \caption{Execution graph of the tracer effect. The parameter $\alpha \in [0; 1]$ is the total opacity of the effect. The parameter $\beta \in [0; 1]$ is the feedback modifier corresponding to the ``duration'' of the resulting blur. Finally, $\Delta t \in [0; +\infty)$ is the time since the previous frame, making the effect less influenced by framerate fluctuations. The accumulation texture is first read from, then written to.}\label{fig:tracers-graph}
+\end{figure}
+
+The parameter $\alpha$ corresponds to the overall opacity of the effect, which is fine-tuned, so that the effect does not cause motion sickness by dominating the visual field. The parameter $\beta$ controls the feedback strength, which can be understood as a parameter that influences the duration of the temporal blur or ``exposition time''. The $\Delta t$ parameter provides resiliency to framerate fluctuations.
+
+This is the final form of the effect that has been used in our application. A preview of the resulting effect can be seen in figure \ref{fig:tracers-demo}.
+
+Nevertheless, the current form of the implementation has some drawbacks, that we have identified late in the development of the application.
+
+First, we have received feedback, that the tracers should not be as noticeable during the movement or rotation of the \ac{HMD}, compared to moving objects in the scene. Despite that, we decided to keep our implementation, because we find it unlikely, that the psychedelic-induced \ac{ASC} would somehow change the perception of objects moving relative to some kind of absolute world frame \textit{only}, rather than of any object that has been moved within the person's field of view.
+
+And second, our implementation completely ignores the direction the user is looking, it only considers the rotation of the \ac{HMD}. A precise eye-tracking device built-into the \ac{HMD} would be required to develop a method that takes the the direction of eyes into account.
+
+Finally, regarding discontinuous tracers, the implementation of such an effect would require keeping more temporal information than just a single accumulation texture. Probably, a 3-dimensional texture would have to be used, with the width and height of the screen and the depth of $\frac{1}{\Delta t} \cdot T$, where $\frac{1}{\Delta t}$ is the framerate, and $T \in (0; +\infty)$ is the delay of the first positive after-image of the tracers. The main challenges may stem from the fact that the framerate of a \ac{VR} application is typically not uniform, as well as from the memory requirements for storing such texture.
+
+\begin{figure}[H]
+    \centering
+    \ifgraphics
+        \includegraphics[width=\textwidth]{img/simr-tracers.png}
+    \fi
+    \caption{A preview of the final implementation of visual tracing, with parameters $\alpha=0.75$, $\beta=0.01$.}\label{fig:tracers-demo}
 \end{figure}
 
 \begin{figure}[H]
@@ -711,7 +736,7 @@ This way, the administrator can launch the appropriate scenario and focus their 
 \begin{figure}[H]
     \centering
     \ifgraphics
-        % \includegraphics[width=0.95\textwidth]{img/cannon.png}
+        \includegraphics[width=\textwidth]{img/simr-master-influence.png}
     \fi
-    \caption{TODO}\label{fig:master-influence}
+    \caption{A function of the \textit{master influence} parameter over time, as displayed in \ac{UE4}. The width of the highlighted region corresponds to 10 minutes. This function corresponds to the intensity of the implemented complex replication during a test of the active scenario.}\label{fig:master-influence}
 \end{figure}
