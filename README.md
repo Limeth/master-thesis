@@ -9,8 +9,8 @@ In this thesis, I explore contemporary attempts at the replication of various as
 
 ## Read
 
-**PDF of the Full Text**: [thesis.pdf](thesis.pdf)\
-**URI of the Publication**: [http://hdl.handle.net/10467/101443](http://hdl.handle.net/10467/101443)
+**Latest Version**: [thesis.pdf](thesis.pdf)\
+**Original Publication**: [http://hdl.handle.net/10467/101443](http://hdl.handle.net/10467/101443)
 
 <br/>
 <br/>

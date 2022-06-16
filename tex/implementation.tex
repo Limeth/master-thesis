@@ -418,7 +418,7 @@ We chose to avoid a screen-space implementation, because satisfying any of those
 
 We can use procedural noise to offset vertices into arbitrary directions in 3 dimensional space, but we need to be careful so that we do not cause geometry to self-intersect. Thankfully, we have already solved this problem in the previous section, and we can use that noise function.
 
-Let us consider the general equation \ref{eq:fbm3} with $a = g = \frac{1}{l}$, and denote the right-hand side expression as a vector field $S \colon \mathbb{R}^n \to \mathbb{R}$, where $n = 4$:
+Let us consider the general equation \ref{eq:fbm3} with $a = g = \frac{1}{l}$, and denote the right-hand side expression as a scalar field $S \colon \mathbb{R}^n \to \mathbb{R}$, where $n = 4$:
 
 \begin{equation}
     S\mleft(\begin{bmatrix}x\\y\\z\\t\end{bmatrix}\mright) = \frac{1}{k} \sum_{i=0}^{k} w(i, r) \cdot g^{i+j(r)} \cdot s\mleft(l^{i+j(r)} \begin{bmatrix}f_sx\\f_sy\\f_sz\\f_tt\end{bmatrix} + (i + j(r)) \vec{o}\mright)
@@ -636,7 +636,7 @@ Finally, regarding discontinuous tracers, the implementation of such an effect w
     \ifgraphics
         \includegraphics[width=\textwidth]{img/simr-tracers.png}
     \fi
-    \caption{A preview of the final implementation of visual tracing, with parameters $\alpha=0.75$, $\beta=0.01$.}\label{fig:tracers-demo}
+    \caption{A preview of the final implementation of visual tracing, with parameters $\alpha=0.75$, $\beta=0.01$. The image shows a white sphere moving right-to-left at a constant speed. The effect's opacity $\alpha$ is exaggerated for illustrative purposes.}\label{fig:tracers-demo}
 \end{figure}
 
 \begin{figure}[H]
