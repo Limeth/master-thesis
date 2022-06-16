@@ -1,24 +1,32 @@
 # [Simulating the phenomena of altered states of consciousness using virtual reality](thesis.pdf)
 
-**Author**: Jakub Hlusička
+**Author**: Jakub Hlusička\
 **Supervisor**: Ing. Josef Kortan
-
-[Read here.](thesis.pdf)
 
 ## Abstract
 
 In this thesis, I explore contemporary attempts at the replication of various aspects of psychedelic-induced altered states of consciousness (ASCs) via software; primarily, the phenomena related to visual perception. Then, I describe my implementation of a replication, which simulates select aspects of a low-dose ASC induced by classical, serotonergic psychedelics, using immersive virtual reality (VR). I describe a study, which I have conducted in order to measure the impact of the resulting implementation on the results of psychometric questionnaires (5D-ASC, 11-ASC) typically used in the evaluation of subjective effects in clinical studies of psychedelics.
 
-## Prerequisites
+## Read
 
-* The Technika font.
+**PDF of the Full Text**: [thesis.pdf](thesis.pdf)\
+**URI of the Publication**: [http://hdl.handle.net/10467/101443](http://hdl.handle.net/10467/101443)
+
+<br/>
+<br/>
+
+## Building
+
+### Prerequisites
+
+* Install the Technika font available on the website of the [Czech Technical University](https://cvut.cz).
 
 ```
 $ sudo apt install texlive-xetex texlive-bibtex-extra biber texlive-science
 $ sudo pip3 install pygments
 ```
 
-## Building
+### Rendering
 
 ```sh
 $ git clone git@github.com:Limeth/master-thesis
