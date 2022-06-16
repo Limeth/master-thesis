@@ -9,7 +9,7 @@ In this thesis, I explore contemporary attempts at the replication of various as
 
 ## Read
 
-**Latest Version**: [thesis.pdf](thesis.pdf)\
+**Latest Version**: [thesis.pdf](https://raw.githubusercontent.com/Limeth/master-thesis/master/thesis.pdf)\
 **Original Publication**: [http://hdl.handle.net/10467/101443](http://hdl.handle.net/10467/101443)
 
 <br/>
