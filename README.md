@@ -11,7 +11,8 @@ In this thesis, I explore contemporary attempts at the replication of various as
 
 **Latest Version**: [PDF](https://raw.githubusercontent.com/Limeth/master-thesis/master/thesis.pdf)\
 **Original Version**: [PDF](https://raw.githubusercontent.com/Limeth/master-thesis/printed/thesis.pdf)\
-**Original Publication**: [http://hdl.handle.net/10467/101443](http://hdl.handle.net/10467/101443)
+**Original Publication**: [http://hdl.handle.net/10467/101443](http://hdl.handle.net/10467/101443)\
+**Access the VR Application**: [SimR on GitLab](https://gitlab.com/Limeth/simr)
 
 <br/>
 <br/>
