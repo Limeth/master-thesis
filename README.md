@@ -1,4 +1,4 @@
-# [Simulating the phenomena of altered states of consciousness using virtual reality](thesis.pdf)
+# [Simulating the phenomena of altered states of consciousness using virtual reality](https://raw.githubusercontent.com/Limeth/master-thesis/master/thesis.pdf)
 
 **Author**: Jakub Hlusička\
 **Supervisor**: Ing. Josef Kortan
